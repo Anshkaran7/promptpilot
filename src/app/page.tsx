@@ -213,6 +213,7 @@ const PromptEnhancer = () => {
                   onChange={(e) => setInputPrompt(e.target.value)}
                   className="min-h-32 resize-none"
                 />
+
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="w-full">

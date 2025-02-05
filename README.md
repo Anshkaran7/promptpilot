@@ -26,7 +26,7 @@ PromptCraft is a modern web application that helps users create more effective a
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/promptcraft.git
+git clone https://github.com/Anshkaran7/promptpilot.git
 cd promptcraft
 ```
 
