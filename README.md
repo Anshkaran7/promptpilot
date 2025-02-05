@@ -1,6 +1,6 @@
 [![Website](https://img.shields.io/website?url=https%3A%2F%2Fpromptpilot.vercel.app)](https://promptpilot.vercel.app)
 [![GitHub license](https://img.shields.io/github/license/Anshkaran7/promptpilot)](https://github.com/Anshkaran7/promptpilot/blob/main/LICENSE)
-[![Twitter Follow](https://img.shields.io/twitter/follow/yourusername?style=social)](https://twitter.com/yourusername)
+[![Twitter Follow](https://img.shields.io/twitter/follow/yourusername?style=social)](https://twitter.com/itsmeekaran)
 
 # PromptPilot 🚀
 
@@ -150,7 +150,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📬 Contact
 
-Ansh Karan - [@YourTwitter](https://twitter.com/yourusername)
+Ansh Karan - [@YourTwitter](https://twitter.com/itsmeekaran)
 
 Project Link: [https://github.com/Anshkaran7/promptpilot](https://github.com/Anshkaran7/promptpilot)
 
