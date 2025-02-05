@@ -14,12 +14,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-// Initialize Supabase client
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY!);
 
@@ -35,6 +29,12 @@ type User = {
 } | null;
 
 const PromptEnhancer = () => {
+  // Initialize Supabase client
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+
   const [inputPrompt, setInputPrompt] = useState("");
   const [enhancedPrompt, setEnhancedPrompt] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
