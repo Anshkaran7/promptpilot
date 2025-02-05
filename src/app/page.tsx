@@ -23,10 +23,15 @@ const supabase = createClient(
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY!);
 
-// Add type for user
+// Update the User type to include more profile fields
 type User = {
   id: string;
   email?: string;
+  user_metadata?: {
+    avatar_url?: string;
+    full_name?: string;
+    name?: string;
+  };
 } | null;
 
 const PromptEnhancer = () => {
@@ -128,11 +133,30 @@ const PromptEnhancer = () => {
     <TooltipProvider>
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-950">
         {/* Auth Button */}
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-4 right-4 flex items-center gap-4">
           {user ? (
-            <Button onClick={handleLogout} variant="outline">
-              Logout
-            </Button>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3 px-4 py-2 rounded-lg bg-white/10 backdrop-blur-sm">
+                {user.user_metadata?.avatar_url && (
+                  <img
+                    src={user.user_metadata.avatar_url}
+                    alt="Profile"
+                    className="w-8 h-8 rounded-full"
+                  />
+                )}
+                <div className="hidden md:block text-sm">
+                  <p className="font-medium">
+                    {user.user_metadata?.full_name || user.user_metadata?.name}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    {user.email}
+                  </p>
+                </div>
+              </div>
+              <Button onClick={handleLogout} variant="outline" size="sm">
+                Logout
+              </Button>
+            </div>
           ) : (
             <Button onClick={handleLogin} className="flex items-center gap-2">
               <LogIn className="w-4 h-4" />

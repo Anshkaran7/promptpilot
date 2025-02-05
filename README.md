@@ -2,7 +2,7 @@
 
 PromptCraft is a modern web application that helps users create more effective and detailed AI prompts. It transforms simple instructions into comprehensive, well-structured prompts that get better results from AI models.
 
-![PromptCraft Screenshot](screenshot.png)
+![PromptCraft Screenshot](./public/screenshot.png)
 
 ## Features
 
