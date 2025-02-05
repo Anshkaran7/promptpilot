@@ -41,6 +41,8 @@ const PromptEnhancer = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   // Update user state with proper type
   const [user, setUser] = useState<User>(null);
+  // Add new state for logout loading
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
     // Check for existing session with error handling
@@ -109,6 +111,7 @@ const PromptEnhancer = () => {
   };
 
   const handleLogout = async () => {
+    setIsLoggingOut(true);
     try {
       const { error } = await supabase.auth.signOut();
       if (error) {
@@ -119,6 +122,8 @@ const PromptEnhancer = () => {
     } catch (err) {
       console.error("Logout failed:", err);
       alert("Failed to logout. Please try again.");
+    } finally {
+      setIsLoggingOut(false);
     }
   };
 
@@ -215,51 +220,66 @@ Please provide the enhanced prompt in a single, well-structured paragraph.`;
       <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100 via-white to-blue-50 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 px-4 sm:px-6 overflow-hidden">
         {/* Navigation Bar */}
         <nav className="fixed top-0 left-0 right-0 z-50 bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border-b border-gray-200/20 dark:border-gray-700/30">
-          <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-              <span className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
-                PromptPilot
-              </span>
-            </div>
-            {/* Auth Button moved to nav */}
-            <div className="flex items-center gap-4">
-              {user ? (
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-3 px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-md shadow-lg dark:bg-gray-800/50 dark:border dark:border-gray-700">
-                    {user.user_metadata?.avatar_url && (
-                      <img
-                        src={user.user_metadata.avatar_url}
-                        alt="Profile"
-                        className="w-8 h-8 rounded-full ring-2 ring-blue-500/50"
-                      />
-                    )}
-                    <div className="hidden sm:block text-sm">
-                      <p className="font-medium dark:text-gray-100">
-                        {user.user_metadata?.full_name ||
-                          user.user_metadata?.name}
-                      </p>
+          <div className="container mx-auto px-2 sm:px-4 py-3">
+            <div className="flex justify-between items-center">
+              {/* Logo Section */}
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" />
+                <span className="text-base sm:text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+                  PromptPilot
+                </span>
+              </div>
+
+              {/* Auth Section - Updated for better mobile responsiveness */}
+              <div className="flex items-center gap-2 sm:gap-4">
+                {user ? (
+                  <div className="flex items-center">
+                    <div className="flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-md shadow-lg dark:bg-gray-800/50 dark:border dark:border-gray-700">
+                      {user.user_metadata?.avatar_url && (
+                        <img
+                          src={user.user_metadata.avatar_url}
+                          alt="Profile"
+                          className="w-6 h-6 sm:w-8 sm:h-8 rounded-full ring-2 ring-blue-500/50"
+                        />
+                      )}
+                      <div className="hidden sm:block text-sm">
+                        <p className="font-medium text-gray-900 dark:text-gray-100">
+                          {user.user_metadata?.full_name ||
+                            user.user_metadata?.name}
+                        </p>
+                      </div>
+                      <Button
+                        onClick={handleLogout}
+                        variant="ghost"
+                        size="sm"
+                        disabled={isLoggingOut}
+                        className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 p-1 sm:p-2"
+                      >
+                        {isLoggingOut ? (
+                          <Spinner
+                            size="sm"
+                            className="border-current border-r-transparent"
+                          />
+                        ) : (
+                          <LogIn className="w-4 h-4 rotate-180" />
+                        )}
+                      </Button>
                     </div>
-                    <Button
-                      onClick={handleLogout}
-                      variant="ghost"
-                      size="sm"
-                      className="ml-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
-                    >
-                      <LogIn className="w-4 h-4 rotate-180" />
-                    </Button>
                   </div>
-                </div>
-              ) : (
-                <Button
-                  onClick={handleLogin}
-                  className="flex items-center gap-2 rounded-full bg-white/20 backdrop-blur-md shadow-lg hover:shadow-blue-500/20 dark:bg-gray-800/50 dark:hover:bg-gray-700/50 dark:text-gray-100 text-sm transition-all duration-300"
-                >
-                  <LogIn className="w-4 h-4" />
-                  <span>Login with Google</span>
-                </Button>
-              )}
-              <ThemeToggle />
+                ) : (
+                  <Button
+                    onClick={handleLogin}
+                    className="flex items-center gap-1.5 sm:gap-2 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white dark:from-blue-500 dark:to-purple-500 px-2.5 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm transition-all duration-300 shadow-lg hover:shadow-blue-500/20"
+                  >
+                    <LogIn className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    <span className="inline-block">
+                      <span className="hidden xs:inline">Login with</span>{" "}
+                      Google
+                    </span>
+                  </Button>
+                )}
+                <ThemeToggle />
+              </div>
             </div>
           </div>
         </nav>
