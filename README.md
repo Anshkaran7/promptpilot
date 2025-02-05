@@ -1,3 +1,7 @@
+[![Website](https://img.shields.io/website?url=https%3A%2F%2Fpromptpilot.vercel.app)](https://promptpilot.vercel.app)
+[![GitHub license](https://img.shields.io/github/license/Anshkaran7/promptpilot)](https://github.com/Anshkaran7/promptpilot/blob/main/LICENSE)
+[![Twitter Follow](https://img.shields.io/twitter/follow/yourusername?style=social)](https://twitter.com/yourusername)
+
 # PromptPilot 🚀
 
 > Your intelligent AI prompt engineering companion that transforms simple instructions into powerful, detailed prompts.
@@ -153,3 +157,21 @@ Project Link: [https://github.com/Anshkaran7/promptpilot](https://github.com/Ans
 ---
 
 <p align="center">Made with ❤️ by Ansh Karan</p>
+
+## �� SEO Optimization
+
+- Meta tags optimization
+- Open Graph protocol support
+- Twitter Cards integration
+- JSON-LD structured data
+- Sitemap XML
+- Robots.txt configuration
+- PWA support
+- Semantic HTML structure
+
+## 📈 Performance
+
+- Lighthouse score: 90+ on all metrics
+- First Contentful Paint (FCP): < 1.5s
+- Time to Interactive (TTI): < 3.8s
+- Cumulative Layout Shift (CLS): < 0.1

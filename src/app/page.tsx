@@ -43,32 +43,83 @@ const PromptEnhancer = () => {
   const [user, setUser] = useState<User>(null);
 
   useEffect(() => {
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-    });
+    // Check for existing session with error handling
+    const checkSession = async () => {
+      try {
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
+        if (error) {
+          console.error("Session error:", error);
+          setUser(null);
+          return;
+        }
+        setUser(session?.user ?? null);
+      } catch (err) {
+        console.error("Failed to check session:", err);
+        setUser(null);
+      }
+    };
 
-    // Listen for auth changes
+    checkSession();
+
+    // Listen for auth changes with error handling
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      try {
+        if (session?.user) {
+          setUser(session.user);
+        } else {
+          setUser(null);
+        }
+      } catch (err) {
+        console.error("Auth state change error:", err);
+        setUser(null);
+      }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const handleLogin = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: window.location.origin,
-      },
-    });
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: window.location.origin,
+          queryParams: {
+            access_type: "offline",
+            prompt: "consent",
+          },
+        },
+      });
+
+      if (error) {
+        console.error("Login error:", error);
+        alert("Failed to login. Please try again.");
+      }
+    } catch (err) {
+      console.error("Login failed:", err);
+      alert("Failed to login. Please try again.");
+    }
   };
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("Logout error:", error);
+        alert("Failed to logout. Please try again.");
+      }
+      setUser(null);
+    } catch (err) {
+      console.error("Logout failed:", err);
+      alert("Failed to logout. Please try again.");
+    }
   };
 
   const enhancePrompt = async (text: string) => {
@@ -93,7 +144,12 @@ const PromptEnhancer = () => {
     try {
       const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
-      const prompt = `Please enhance the following prompt by adding detailed structure and requirements. Make it comprehensive and well-organized: "${translatedText}"`;
+      const prompt = `Transform this prompt into a detailed, comprehensive paragraph. Include specific requirements, context, and desired outcomes. Make it clear and actionable while maintaining a natural flow: "${translatedText}"
+
+Example format:
+"Create a detailed [topic/task] that [specific requirements]. Ensure to include [important elements] while focusing on [key aspects]. The output should [desired outcome] and incorporate [specific features/elements]. Consider [relevant context/constraints] and optimize for [quality factors]."
+
+Please provide the enhanced prompt in a single, well-structured paragraph.`;
 
       const result = await model.generateContent(prompt);
       const response = await result.response;
@@ -128,6 +184,30 @@ const PromptEnhancer = () => {
     } catch (err) {
       console.error("Failed to copy text:", err);
     }
+  };
+
+  // Add this near the top of your component
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "PromptPilot",
+    applicationCategory: "UtilityApplication",
+    operatingSystem: "Any",
+    description:
+      "An intelligent AI prompt engineering companion that transforms simple instructions into powerful, detailed prompts.",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+    author: {
+      "@type": "Person",
+      name: "Ansh Karan",
+    },
+    keywords:
+      "AI prompt engineering, prompt enhancement, GPT prompts, AI writing assistant",
+    softwareVersion: "0.1.0",
+    applicationSubCategory: "AI Tools",
   };
 
   return (
@@ -366,6 +446,12 @@ const PromptEnhancer = () => {
             <p>© 2024 PromptPilot. Powered by AI.</p>
           </div>
         </footer>
+
+        {/* Add this inside your component's return statement, before the main content */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </div>
     </TooltipProvider>
   );
