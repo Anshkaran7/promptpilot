@@ -13,6 +13,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY!);
@@ -131,112 +132,140 @@ const PromptEnhancer = () => {
 
   return (
     <TooltipProvider>
-      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 px-4 sm:px-6">
-        {/* Auth Button */}
-        <div className="absolute top-4 right-4 z-10">
-          {user ? (
-            <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 sm:gap-4">
-              <div className="flex items-center gap-3 px-3 sm:px-4 py-2 rounded-lg bg-white/10 backdrop-blur-sm dark:bg-gray-800/50 dark:border dark:border-gray-700">
-                {user.user_metadata?.avatar_url && (
-                  <img
-                    src={user.user_metadata.avatar_url}
-                    alt="Profile"
-                    className="w-6 h-6 sm:w-8 sm:h-8 rounded-full"
-                  />
-                )}
-                <div className="hidden sm:block text-sm">
-                  <p className="font-medium dark:text-gray-100 text-right">
-                    {user.user_metadata?.full_name || user.user_metadata?.name}
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {user.email}
-                  </p>
-                </div>
-              </div>
-              <Button
-                onClick={handleLogout}
-                variant="outline"
-                size="sm"
-                className="dark:border-gray-700 dark:hover:bg-gray-800 dark:text-gray-300 text-xs sm:text-sm"
-              >
-                Logout
-              </Button>
+      <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100 via-white to-blue-50 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 px-4 sm:px-6 overflow-hidden">
+        {/* Navigation Bar */}
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border-b border-gray-200/20 dark:border-gray-700/30">
+          <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+              <span className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+                PromptPilot
+              </span>
             </div>
-          ) : (
-            <Button
-              onClick={handleLogin}
-              className="flex items-center gap-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-100 text-xs sm:text-sm"
-            >
-              <LogIn className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span className="hidden sm:inline">Login with Google</span>
-              <span className="sm:hidden">Login</span>
-            </Button>
-          )}
-        </div>
+            {/* Auth Button moved to nav */}
+            <div className="flex items-center gap-4">
+              {user ? (
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-md shadow-lg dark:bg-gray-800/50 dark:border dark:border-gray-700">
+                    {user.user_metadata?.avatar_url && (
+                      <img
+                        src={user.user_metadata.avatar_url}
+                        alt="Profile"
+                        className="w-8 h-8 rounded-full ring-2 ring-blue-500/50"
+                      />
+                    )}
+                    <div className="hidden sm:block text-sm">
+                      <p className="font-medium dark:text-gray-100">
+                        {user.user_metadata?.full_name ||
+                          user.user_metadata?.name}
+                      </p>
+                    </div>
+                    <Button
+                      onClick={handleLogout}
+                      variant="ghost"
+                      size="sm"
+                      className="ml-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                    >
+                      <LogIn className="w-4 h-4 rotate-180" />
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <Button
+                  onClick={handleLogin}
+                  className="flex items-center gap-2 rounded-full bg-white/20 backdrop-blur-md shadow-lg hover:shadow-blue-500/20 dark:bg-gray-800/50 dark:hover:bg-gray-700/50 dark:text-gray-100 text-sm transition-all duration-300"
+                >
+                  <LogIn className="w-4 h-4" />
+                  <span>Login with Google</span>
+                </Button>
+              )}
+              <ThemeToggle />
+            </div>
+          </div>
+        </nav>
 
-        {/* Hero Section */}
-        <div className="container mx-auto py-8 sm:py-12">
-          <div className="text-center mb-8 sm:mb-12 pt-16 sm:pt-12">
-            <h1 className="text-3xl sm:text-4xl font-bold mb-3 sm:mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500 dark:from-blue-400 dark:to-purple-400 px-4">
-              AI Prompt Enhancer
-            </h1>
-            <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto px-4">
-              Transform simple prompts into powerful, detailed instructions
+        {/* Hero Section - Updated */}
+        <div className="container mx-auto py-8 sm:py-12 mt-16">
+          <div className="text-center mb-12 sm:mb-16 pt-8">
+            <div className="relative inline-block mb-8">
+              <h1 className="text-4xl sm:text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 px-4 filter drop-shadow-lg">
+                Your AI Prompt Co-Pilot
+              </h1>
+              <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg opacity-20 blur-2xl -z-10"></div>
+            </div>
+            <p className="text-xl sm:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto px-4 leading-relaxed">
+              Transform your simple ideas into powerful, detailed AI prompts
             </p>
 
-            {/* Feature Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12 px-2">
-              <Card className="p-4 sm:p-6 hover:shadow-lg transition-shadow dark:bg-gray-800/50 dark:border-gray-700">
-                <Globe className="w-6 h-6 sm:w-8 sm:h-8 text-blue-500 dark:text-blue-400 mx-auto mb-3 sm:mb-4" />
-                <h3 className="font-semibold mb-2 dark:text-gray-100 text-sm sm:text-base">
-                  Multilingual Support
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm">
-                  Works with both English and Hindi prompts
-                </p>
+            {/* Feature Cards - Horizontal Layout */}
+            <div className="flex flex-wrap justify-center gap-6 mb-12 px-2">
+              <Card className="flex items-center gap-4 p-4 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 backdrop-blur-md bg-white/20 dark:bg-gray-800/30 dark:border-gray-700 rounded-2xl w-auto">
+                <Globe className="w-8 h-8 text-blue-500 dark:text-blue-400 animate-pulse" />
+                <div className="text-left">
+                  <h3 className="font-semibold dark:text-gray-100 text-base">
+                    Multilingual
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">
+                    English & Hindi Support
+                  </p>
+                </div>
               </Card>
 
-              <Card className="p-4 sm:p-6 hover:shadow-lg transition-shadow dark:bg-gray-800/50 dark:border-gray-700">
-                <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-purple-500 dark:text-purple-400 mx-auto mb-3 sm:mb-4" />
-                <h3 className="font-semibold mb-2 dark:text-gray-100 text-sm sm:text-base">
-                  Smart Enhancement
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm">
-                  Adds structure and detail to your prompts
-                </p>
+              <Card className="flex items-center gap-4 p-4 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 backdrop-blur-md bg-white/20 dark:bg-gray-800/30 dark:border-gray-700 rounded-2xl w-auto">
+                <Sparkles className="w-8 h-8 text-purple-500 dark:text-purple-400 animate-pulse" />
+                <div className="text-left">
+                  <h3 className="font-semibold dark:text-gray-100 text-base">
+                    Smart Enhancement
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">
+                    AI-Powered Refinement
+                  </p>
+                </div>
               </Card>
 
-              <Card className="p-4 sm:p-6 hover:shadow-lg transition-shadow dark:bg-gray-800/50 dark:border-gray-700">
-                <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500 dark:text-yellow-400 mx-auto mb-3 sm:mb-4" />
-                <h3 className="font-semibold mb-2 dark:text-gray-100 text-sm sm:text-base">
-                  Instant Results
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm">
-                  Get enhanced prompts in seconds
-                </p>
+              <Card className="flex items-center gap-4 p-4 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 backdrop-blur-md bg-white/20 dark:bg-gray-800/30 dark:border-gray-700 rounded-2xl w-auto">
+                <Zap className="w-8 h-8 text-yellow-500 dark:text-yellow-400 animate-pulse" />
+                <div className="text-left">
+                  <h3 className="font-semibold dark:text-gray-100 text-base">
+                    Instant Results
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">
+                    Quick & Efficient
+                  </p>
+                </div>
               </Card>
             </div>
           </div>
 
-          {/* Main Interface */}
-          <Card className="max-w-4xl mx-auto p-4 sm:p-6 shadow-lg dark:bg-gray-800/50 dark:border-gray-700">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+          {/* Main Interface - Updated */}
+          <Card className="max-w-5xl mx-auto p-8 shadow-2xl dark:bg-gray-800/30 dark:border-gray-700 backdrop-blur-md bg-white/20 rounded-2xl">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Input Section */}
-              <div className="space-y-3 sm:space-y-4">
-                <h2 className="text-base sm:text-lg font-semibold mb-2 dark:text-gray-100">
-                  Your Prompt
-                </h2>
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-semibold dark:text-gray-100 flex items-center gap-2">
+                    Your Prompt
+                    <span className="text-sm text-gray-500 dark:text-gray-400 font-normal">
+                      (English or Hindi)
+                    </span>
+                  </h2>
+                  {!user && (
+                    <span className="text-sm text-blue-600 dark:text-blue-400">
+                      Login to start enhancing
+                    </span>
+                  )}
+                </div>
                 <Textarea
                   placeholder="Enter your prompt in English or Hindi..."
                   value={inputPrompt}
                   onChange={(e) => setInputPrompt(e.target.value)}
-                  className="min-h-[120px] sm:min-h-[160px] resize-none dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500 text-sm sm:text-base"
+                  className="min-h-[160px] sm:min-h-[200px] resize-none dark:bg-gray-900/50 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500 text-sm sm:text-base rounded-xl focus:ring-2 focus:ring-blue-500/50 transition-all duration-300"
                 />
 
                 <Button
                   onClick={handleEnhance}
                   disabled={!inputPrompt || isProcessing || !user}
-                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 text-sm sm:text-base"
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 text-sm sm:text-base rounded-xl shadow-lg hover:shadow-blue-500/20 transition-all duration-300"
                 >
                   {isProcessing ? (
                     <span className="flex items-center gap-2">
@@ -255,13 +284,16 @@ const PromptEnhancer = () => {
               </div>
 
               {/* Output Section */}
-              <div className="space-y-3 sm:space-y-4">
-                <h2 className="text-base sm:text-lg font-semibold mb-2 dark:text-gray-100">
+              <div className="space-y-6">
+                <h2 className="text-lg font-semibold dark:text-gray-100 flex items-center gap-2">
                   Enhanced Prompt
+                  <span className="text-sm text-gray-500 dark:text-gray-400 font-normal">
+                    (AI Enhanced)
+                  </span>
                 </h2>
                 <div className="relative">
                   {isProcessing ? (
-                    <div className="min-h-[120px] sm:min-h-[160px] flex items-center justify-center bg-gray-50 dark:bg-gray-900 rounded-md border dark:border-gray-700">
+                    <div className="min-h-[160px] sm:min-h-[200px] flex items-center justify-center bg-gray-50/50 dark:bg-gray-900/50 rounded-xl border dark:border-gray-700 backdrop-blur-sm">
                       <Spinner
                         size="lg"
                         className="dark:border-gray-400 dark:border-r-transparent"
@@ -271,57 +303,69 @@ const PromptEnhancer = () => {
                     <Textarea
                       value={enhancedPrompt}
                       readOnly
-                      className="min-h-[120px] sm:min-h-[160px] resize-none bg-gray-50 dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100 text-sm sm:text-base"
+                      className="min-h-[160px] sm:min-h-[200px] resize-none bg-gray-50/50 dark:bg-gray-900/50 dark:border-gray-700 dark:text-gray-100 text-sm sm:text-base rounded-xl backdrop-blur-sm"
                       placeholder="Your enhanced prompt will appear here..."
                     />
                   )}
                   {enhancedPrompt && !isProcessing && (
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="absolute top-2 right-2 dark:border-gray-700 dark:hover:bg-gray-700"
-                      onClick={handleCopy}
-                    >
-                      <Copy className="h-4 w-4" />
-                    </Button>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="absolute top-2 right-2 rounded-lg dark:bg-gray-800/50 dark:border-gray-700 dark:hover:bg-gray-700/50 backdrop-blur-sm transition-all duration-300"
+                          onClick={handleCopy}
+                        >
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Copy to clipboard</TooltipContent>
+                    </Tooltip>
                   )}
                 </div>
               </div>
             </div>
           </Card>
 
-          {/* Example Section */}
-          <div className="mt-8 sm:mt-12 text-center px-2">
-            <h2 className="text-xl sm:text-2xl font-semibold mb-4 dark:text-gray-100">
-              Try these examples
+          {/* Example Section - Updated */}
+          <div className="mt-16 text-center">
+            <h2 className="text-2xl font-semibold mb-8 dark:text-gray-100">
+              Quick Start Examples
             </h2>
-            <div className="flex flex-wrap gap-2 justify-center">
+            <div className="flex flex-wrap gap-4 justify-center max-w-3xl mx-auto">
               <Button
                 variant="outline"
                 onClick={() =>
                   setInputPrompt("write a story about a magical forest")
                 }
-                className="text-xs sm:text-sm dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+                className="text-xs sm:text-sm dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800/50 rounded-xl backdrop-blur-sm hover:shadow-lg transition-all duration-300"
               >
                 Story about magical forest
               </Button>
               <Button
                 variant="outline"
                 onClick={() => setInputPrompt("explain quantum computing")}
-                className="text-xs sm:text-sm dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+                className="text-xs sm:text-sm dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800/50 rounded-xl backdrop-blur-sm hover:shadow-lg transition-all duration-300"
               >
                 Explain quantum computing
               </Button>
               <Button
                 variant="outline"
                 onClick={() => setInputPrompt("एक केक बनाने की विधि बताएं")}
-                className="text-xs sm:text-sm dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+                className="text-xs sm:text-sm dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800/50 rounded-xl backdrop-blur-sm hover:shadow-lg transition-all duration-300"
               >
                 एक केक बनाने की विधि
               </Button>
             </div>
           </div>
         </div>
+
+        {/* Footer */}
+        <footer className="mt-16 py-8 border-t border-gray-200/20 dark:border-gray-700/30">
+          <div className="container mx-auto text-center text-sm text-gray-600 dark:text-gray-400">
+            <p>© 2024 PromptPilot. Powered by AI.</p>
+          </div>
+        </footer>
       </div>
     </TooltipProvider>
   );
