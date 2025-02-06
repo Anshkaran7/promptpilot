@@ -49,7 +49,6 @@ const PromptEnhancer = () => {
 
   useEffect(() => {
     let mounted = true;
-    let welcomeEmailSent = false; // Local variable to track email status
 
     // Check for existing session with error handling
     const checkSession = async () => {
@@ -94,7 +93,6 @@ const PromptEnhancer = () => {
 
         // Only send welcome email on initial SIGNED_IN event and if not already sent
         if (event === "SIGNED_IN" && !welcomeEmailSent) {
-          welcomeEmailSent = true; // Set local flag
           try {
             await fetch("/api/send-welcome-email", {
               method: "POST",
@@ -111,7 +109,6 @@ const PromptEnhancer = () => {
             setWelcomeEmailSent(true);
           } catch (error) {
             console.error("Failed to send welcome email:", error);
-            welcomeEmailSent = false; // Reset on error
           }
         }
       }
