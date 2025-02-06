@@ -43,49 +43,85 @@ const PromptEnhancer = () => {
   const [user, setUser] = useState<User>(null);
   // Add new state for logout loading
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  // Add state to track if welcome email was sent
+  const [welcomeEmailSent, setWelcomeEmailSent] = useState(false);
+  const [isSessionLoading, setIsSessionLoading] = useState(true);
 
   useEffect(() => {
+    let mounted = true;
+    let welcomeEmailSent = false; // Local variable to track email status
+
     // Check for existing session with error handling
     const checkSession = async () => {
       try {
+        setIsSessionLoading(true);
         const {
           data: { session },
           error,
         } = await supabase.auth.getSession();
-        if (error) {
-          console.error("Session error:", error);
-          setUser(null);
-          return;
+
+        if (error) throw error;
+
+        if (mounted) {
+          setUser(session?.user ?? null);
+          setIsSessionLoading(false);
         }
-        setUser(session?.user ?? null);
       } catch (err) {
-        console.error("Failed to check session:", err);
-        setUser(null);
+        console.error("Session check failed:", err);
+        if (mounted) {
+          setUser(null);
+          setIsSessionLoading(false);
+        }
       }
     };
 
     checkSession();
 
-    // Listen for auth changes with error handling
+    // Auth state change listener
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      try {
-        if (session?.user) {
-          setUser(session.user);
-        } else {
-          setUser(null);
-        }
-      } catch (err) {
-        console.error("Auth state change error:", err);
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (!mounted) return;
+
+      if (event === "SIGNED_OUT") {
         setUser(null);
+        setWelcomeEmailSent(false);
+        // Clear any user-specific state here
+        setInputPrompt("");
+        setEnhancedPrompt("");
+      } else if (session?.user) {
+        setUser(session.user);
+
+        // Only send welcome email on initial SIGNED_IN event and if not already sent
+        if (event === "SIGNED_IN" && !welcomeEmailSent) {
+          welcomeEmailSent = true; // Set local flag
+          try {
+            await fetch("/api/send-welcome-email", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                email: session.user.email,
+                name:
+                  session.user.user_metadata?.full_name ||
+                  session.user.user_metadata?.name ||
+                  "there",
+                isNewUser: true,
+              }),
+            });
+            setWelcomeEmailSent(true);
+          } catch (error) {
+            console.error("Failed to send welcome email:", error);
+            welcomeEmailSent = false; // Reset on error
+          }
+        }
       }
     });
 
     return () => {
+      mounted = false;
       subscription.unsubscribe();
     };
-  }, []);
+  }, []); // Empty dependency array
 
   const handleLogin = async () => {
     try {
@@ -111,14 +147,21 @@ const PromptEnhancer = () => {
   };
 
   const handleLogout = async () => {
+    if (isLoggingOut) return; // Prevent multiple clicks
+
     setIsLoggingOut(true);
     try {
       const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error("Logout error:", error);
-        alert("Failed to logout. Please try again.");
-      }
+      if (error) throw error;
+
+      // Clear client-side state
       setUser(null);
+      setWelcomeEmailSent(false);
+      setInputPrompt("");
+      setEnhancedPrompt("");
+
+      // Force page refresh to clear any cached state
+      window.location.reload();
     } catch (err) {
       console.error("Logout failed:", err);
       alert("Failed to logout. Please try again.");
@@ -215,6 +258,15 @@ Please provide the enhanced prompt in a single, well-structured paragraph.`;
     applicationSubCategory: "AI Tools",
   };
 
+  // Add this helper function near the top of the component
+  const getInitials = (fullName: string) => {
+    const names = fullName.split(" ");
+    if (names.length >= 2) {
+      return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
+    }
+    return names[0][0].toUpperCase();
+  };
+
   return (
     <TooltipProvider>
       <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100 via-white to-blue-50 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 px-4 sm:px-6 overflow-hidden">
@@ -230,17 +282,31 @@ Please provide the enhanced prompt in a single, well-structured paragraph.`;
                 </span>
               </div>
 
-              {/* Auth Section - Updated for better mobile responsiveness */}
               <div className="flex items-center gap-2 sm:gap-4">
-                {user ? (
+                {isSessionLoading ? (
+                  <div className="p-2">
+                    <Spinner
+                      size="sm"
+                      className="border-blue-500 border-r-transparent"
+                    />
+                  </div>
+                ) : user ? (
                   <div className="flex items-center">
                     <div className="flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-md shadow-lg dark:bg-gray-800/50 dark:border dark:border-gray-700">
-                      {user.user_metadata?.avatar_url && (
+                      {user.user_metadata?.avatar_url ? (
                         <img
                           src={user.user_metadata.avatar_url}
                           alt="Profile"
                           className="w-6 h-6 sm:w-8 sm:h-8 rounded-full ring-2 ring-blue-500/50"
                         />
+                      ) : (
+                        <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full ring-2 ring-blue-500/50 bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs sm:text-sm font-medium">
+                          {getInitials(
+                            user.user_metadata?.full_name ||
+                              user.user_metadata?.name ||
+                              "User"
+                          )}
+                        </div>
                       )}
                       <div className="hidden sm:block text-sm">
                         <p className="font-medium text-gray-900 dark:text-gray-100">
