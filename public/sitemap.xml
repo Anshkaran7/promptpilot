@@ -1,10 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
   <url>
     <loc>https://promptpilot7.vercel.app</loc>
-    <lastmod>2024-03-20</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2025-02-05</lastmod>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
+    <news:news>
+      <news:publication>
+        <news:name>PromptPilot</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2025-02-05</news:publication_date>
+      <news:title>PromptPilot - AI Prompt Engineering Tool</news:title>
+    </news:news>
+    <image:image>
+      <image:loc>https://promptpilot7.vercel.app/og-image.png</image:loc>
+      <image:title>PromptPilot - AI Prompt Engineering Tool</image:title>
+      <image:caption>Transform your simple ideas into powerful AI prompts</image:caption>
+    </image:image>
   </url>
   <!-- Add more URLs as your site grows -->
 </urlset> 

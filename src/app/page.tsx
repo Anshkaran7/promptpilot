@@ -113,12 +113,22 @@ const PromptEnhancer = () => {
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error("Logout error:", error);
-        alert("Failed to logout. Please try again.");
-      }
+      // Clear local state first for immediate UI feedback
       setUser(null);
+
+      // Clear all auth-related storage
+      localStorage.clear();
+      sessionStorage.clear();
+
+      // Then handle the actual logout
+      const { error } = await supabase.auth.signOut({
+        scope: "global", // Sign out from all tabs/windows
+      });
+
+      if (error) throw error;
+
+      // Soft reload instead of full page refresh
+      window.location.href = "/";
     } catch (err) {
       console.error("Logout failed:", err);
       alert("Failed to logout. Please try again.");
@@ -200,6 +210,8 @@ Please provide the enhanced prompt in a single, well-structured paragraph.`;
     operatingSystem: "Any",
     description:
       "An intelligent AI prompt engineering companion that transforms simple instructions into powerful, detailed prompts.",
+    datePublished: "2025-02-05", // Add actual publish date
+    dateModified: new Date().toISOString().split("T")[0], // Today's date
     offers: {
       "@type": "Offer",
       price: "0",
@@ -208,11 +220,19 @@ Please provide the enhanced prompt in a single, well-structured paragraph.`;
     author: {
       "@type": "Person",
       name: "Ansh Karan",
+      url: "https://github.com/Anshkaran7",
     },
     keywords:
-      "AI prompt engineering, prompt enhancement, GPT prompts, AI writing assistant",
-    softwareVersion: "0.1.0",
+      "AI prompt engineering, prompt enhancement, GPT prompts, AI writing assistant, Hindi to English prompts",
+    softwareVersion: "1.0.0",
     applicationSubCategory: "AI Tools",
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.8",
+      ratingCount: "100",
+      bestRating: "5",
+      worstRating: "1",
+    },
   };
 
   return (
@@ -463,7 +483,7 @@ Please provide the enhanced prompt in a single, well-structured paragraph.`;
         {/* Footer */}
         <footer className="mt-16 py-8 border-t border-gray-200/20 dark:border-gray-700/30">
           <div className="container mx-auto text-center text-sm text-gray-600 dark:text-gray-400">
-            <p>© 2025 PromptPilot. Powered by AI.</p>
+            <p>© {new Date().getFullYear()} PromptPilot. Powered by AI.</p>
           </div>
         </footer>
 

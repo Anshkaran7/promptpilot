@@ -13,23 +13,28 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   metadataBase: new URL("https://promptpilot7.vercel.app"),
   title: {
-    default: "PromptPilot - AI Prompt Engineering & Enhancement Tool",
-    template: "%s | PromptPilot",
+    default: "PromptPilot - Best AI Prompt Engineering & Enhancement Tool",
+    template: "%s | PromptPilot - AI Prompt Engineering",
   },
   description:
-    "Transform simple instructions into powerful, detailed AI prompts with PromptPilot. Features intelligent prompt enhancement, multilingual support (English & Hindi), and real-time analysis powered by Google's Gemini AI.",
+    "PromptPilot: Your AI prompt engineering assistant. Transform simple instructions into powerful, detailed prompts. Support for English & Hindi, powered by Google's Gemini AI. Try free now!",
   keywords: [
-    "AI prompt engineering",
-    "prompt enhancement",
-    "GPT prompts",
+    "PromptPilot",
+    "AI prompt generator",
+    "prompt engineering tool",
     "AI writing assistant",
-    "prompt optimization",
-    "Gemini AI",
-    "multilingual prompts",
+    "Gemini AI prompts",
+    "best prompt generator",
     "Hindi to English prompts",
-    "AI tools",
-    "prompt generator",
+    "free prompt engineering",
+    "AI prompt optimization",
+    "prompt enhancement tool",
+    "multilingual AI prompts",
+    "professional prompt writer",
   ],
+  verification: {
+    google: "your-google-verification-code", // Add your Google Search Console verification code
+  },
   authors: [{ name: "Ansh Karan", url: "https://github.com/Anshkaran7" }],
   creator: "Ansh Karan",
   publisher: "PromptPilot",
@@ -137,6 +142,32 @@ export default function RootLayout({
             }),
           }}
         />
+
+        {/* Social Media Preview */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://promptpilot7.vercel.app/" />
+        <meta
+          property="og:title"
+          content="PromptPilot - Best AI Prompt Engineering Tool"
+        />
+        <meta
+          property="og:description"
+          content="Transform your simple ideas into powerful, detailed AI prompts with PromptPilot. Free tool with English & Hindi support."
+        />
+        <meta
+          property="og:image"
+          content="https://promptpilot7.vercel.app/og-image.png"
+        />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@promptpilot" />
+        <meta name="twitter:creator" content="@anshkaran7" />
+
+        {/* Additional SEO Meta Tags */}
+        <link rel="canonical" href="https://promptpilot7.vercel.app" />
+        <meta name="author" content="Ansh Karan" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
       <body className={montserrat.className}>
         <ThemeProvider
