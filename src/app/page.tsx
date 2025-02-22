@@ -149,7 +149,8 @@ Please provide the enhanced prompt in a single, well-structured paragraph.`;
       const result = await model.generateContent(prompt);
       const response = await result.response;
       return response.text();
-    } catch (error) {
+    } catch (err) {
+      console.error("Enhancement error:", err);
       throw new Error("Failed to enhance prompt");
     }
   };
