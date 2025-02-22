@@ -1,21 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /api/
-Disallow: /_next/
-Disallow: /static/
 
-# Allow main content
-Allow: /*.html
-Allow: /*.js
-Allow: /*.css
-Allow: /*.png
-Allow: /*.jpg
-Allow: /*.gif
-Allow: /*.svg
-Allow: /*.ico
-
-# Crawl delay
-Crawl-delay: 10
-
-# Sitemaps
-Sitemap: https://promptpilot7.vercel.app/sitemap.xml 
+Sitemap: https://promptpilot.infinitylinkage.com/sitemap.xml

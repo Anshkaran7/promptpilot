@@ -22,5 +22,10 @@
       <image:caption>Transform your simple ideas into powerful AI prompts</image:caption>
     </image:image>
   </url>
-  <!-- Add more URLs as your site grows -->
-</urlset> 
+  <url>
+    <loc>https://promptpilot.infinitylinkage.com</loc>
+    <lastmod>2025-02-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>
