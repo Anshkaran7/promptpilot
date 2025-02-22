@@ -208,7 +208,7 @@ Please provide the enhanced prompt in a single, well-structured paragraph.`;
 
   return (
     <TooltipProvider>
-      <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100 via-purple-50 to-white dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900 px-4 sm:px-6 overflow-hidden relative">
+      <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100 via-purple-50 to-white dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900 px-2 sm:px-4 md:px-6 overflow-hidden relative">
         {/* Background Elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <motion.div
@@ -227,29 +227,29 @@ Please provide the enhanced prompt in a single, well-structured paragraph.`;
 
         {/* Navigation */}
         <header className="fixed top-0 left-0 right-0 z-50 bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border-b border-gray-200/20 dark:border-gray-700/30">
-          <nav className="container mx-auto px-4 py-3">
+          <nav className="container mx-auto px-2 sm:px-4 py-2 sm:py-3">
             <div className="flex justify-between items-center">
               <motion.div
-                className="flex items-center gap-2"
+                className="flex items-center gap-1 sm:gap-2"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <Sparkles className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                <span className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+                <Sparkles className="w-4 h-4 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" />
+                <span className="text-base sm:text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
                   PromptPilot
                 </span>
               </motion.div>
 
               <motion.div
-                className="flex items-center gap-4"
+                className="flex items-center gap-2 sm:gap-4"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5 }}
               >
                 {user ? (
                   <div className="flex items-center">
-                    <div className="flex items-center gap-3 px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-md shadow-lg dark:bg-gray-800/50 border border-gray-200/20 dark:border-gray-700/20">
+                    <div className="flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white/20 backdrop-blur-md shadow-lg dark:bg-gray-800/50 border border-gray-200/20 dark:border-gray-700/20">
                       {user.user_metadata?.avatar_url && (
                         <img
                           src={
@@ -282,10 +282,11 @@ Please provide the enhanced prompt in a single, well-structured paragraph.`;
                 ) : (
                   <Button
                     onClick={handleLogin}
-                    className="flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-blue-500/20 transition-all duration-300"
+                    className="flex items-center gap-1 sm:gap-2 rounded-full text-sm sm:text-base bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-blue-500/20 transition-all duration-300"
                   >
-                    <LogIn className="w-4 h-4" />
-                    <span>Login with Google</span>
+                    <LogIn className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <span className="hidden sm:inline">Login with Google</span>
+                    <span className="sm:hidden">Login</span>
                   </Button>
                 )}
                 <ThemeToggle />
@@ -294,23 +295,23 @@ Please provide the enhanced prompt in a single, well-structured paragraph.`;
           </nav>
         </header>
 
-        <main className="container mx-auto py-12 mt-16">
+        <main className="container mx-auto py-8 sm:py-12 mt-16">
           {/* Hero Section */}
           <motion.section
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-16 pt-8"
+            className="text-center mb-8 sm:mb-16 pt-4 sm:pt-8"
           >
-            <h1 className="text-5xl sm:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400">
+            <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold mb-4 sm:mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400">
               Your AI Prompt Co-Pilot
             </h1>
-            <p className="text-xl sm:text-2xl text-gray-600 dark:text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 sm:mb-12 max-w-3xl mx-auto leading-relaxed px-4">
               Transform your simple ideas into powerful, detailed AI prompts
             </p>
 
             {/* Feature Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto px-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto px-4">
               {[
                 {
                   icon: Globe,
@@ -372,12 +373,12 @@ Please provide the enhanced prompt in a single, well-structured paragraph.`;
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="max-w-5xl mx-auto"
+            className="max-w-5xl mx-auto px-4"
           >
-            <Card className="p-8 shadow-2xl bg-white/5 dark:bg-gray-800/5 backdrop-blur-md border border-gray-200/20 dark:border-gray-700/20 rounded-3xl">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <Card className="p-4 sm:p-6 md:p-8 shadow-2xl bg-white/5 dark:bg-gray-800/5 backdrop-blur-md border border-gray-200/20 dark:border-gray-700/20 rounded-2xl sm:rounded-3xl">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
                 {/* Input Section */}
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                   <div className="flex items-center justify-between">
                     <h2 className="text-lg font-semibold dark:text-gray-100 flex items-center gap-2">
                       Your Prompt
@@ -412,7 +413,7 @@ Please provide the enhanced prompt in a single, well-structured paragraph.`;
                 </div>
 
                 {/* Output Section */}
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                   <h2 className="text-lg font-semibold dark:text-gray-100 flex items-center gap-2">
                     Enhanced Prompt
                     <span className="text-sm text-gray-500 dark:text-gray-400 font-normal">
@@ -482,12 +483,12 @@ Please provide the enhanced prompt in a single, well-structured paragraph.`;
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="mt-16 text-center"
+            className="mt-8 sm:mt-16 text-center px-4"
           >
-            <h2 className="text-2xl font-semibold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+            <h2 className="text-xl sm:text-2xl font-semibold mb-6 sm:mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
               Quick Start Examples
             </h2>
-            <div className="flex flex-wrap gap-4 justify-center max-w-3xl mx-auto">
+            <div className="flex flex-wrap gap-2 sm:gap-4 justify-center max-w-3xl mx-auto">
               {examples.map((example, index) => (
                 <motion.div
                   key={index}
@@ -509,9 +510,9 @@ Please provide the enhanced prompt in a single, well-structured paragraph.`;
         </main>
 
         {/* Footer */}
-        <footer className="mt-16 py-8 border-t border-gray-200/20 dark:border-gray-700/30">
-          <div className="container mx-auto text-center space-y-4">
-            <div className="flex justify-center items-center gap-6">
+        <footer className="mt-8 sm:mt-16 py-6 sm:py-8 border-t border-gray-200/20 dark:border-gray-700/30">
+          <div className="container mx-auto text-center space-y-4 px-4">
+            <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6">
               {[
                 {
                   href: "https://twitter.com/itsmeekaran",
@@ -543,7 +544,7 @@ Please provide the enhanced prompt in a single, well-structured paragraph.`;
                 </motion.a>
               ))}
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
               © {new Date().getFullYear()} PromptPilot. Powered by AI.
             </p>
           </div>
