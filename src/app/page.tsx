@@ -33,6 +33,9 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY!);
 
+// Define the model name as a constant to easily update it if needed
+const GEMINI_MODEL = "gemini-1.5-pro";
+
 type User = {
   id: string;
   email?: string;
@@ -138,7 +141,8 @@ const PromptEnhancer = () => {
     });
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+      // Use the updated model name
+      const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
       const prompt = `Transform this prompt into a detailed, comprehensive paragraph. Include specific requirements, context, and desired outcomes. Make it clear and actionable while maintaining a natural flow: "${translatedText}"
 
 Example format:
@@ -146,8 +150,21 @@ Example format:
 
 Please provide the enhanced prompt in a single, well-structured paragraph.`;
 
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
+      // Add safety settings and generation config for better reliability
+      const generationConfig = {
+        temperature: 0.7,
+        topK: 40,
+        topP: 0.95,
+        maxOutputTokens: 1024,
+      };
+
+      const result = await model.generateContent({
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        generationConfig,
+      });
+
+      // Extract text from the updated API response format
+      const response = result.response;
       return response.text();
     } catch (err) {
       console.error("Enhancement error:", err);
