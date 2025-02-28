@@ -21,7 +21,6 @@ import {
   Trash2,
   Sparkle,
   Check,
-  Share,
   BookmarkPlus,
   Lightbulb,
 } from "lucide-react";
@@ -70,11 +69,6 @@ type Prompt = {
   input_prompt: string;
   output_response: string;
   created_at: string;
-};
-
-type ApiError = {
-  message: string;
-  [key: string]: unknown;
 };
 
 const PromptEnhancer = () => {
@@ -373,10 +367,6 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
       ? `${text.substring(0, maxLength)}...`
       : text;
   };
-
-  function setShowShare(_: boolean): void {
-    throw new Error("Function not implemented.");
-  }
 
   function handleSave(): void {
     throw new Error("Function not implemented.");
@@ -921,12 +911,12 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
                                   </TooltipContent>
                                 </Tooltip>
 
-                                <Tooltip>
+                                {/* <Tooltip>
                                   <TooltipTrigger asChild>
                                     <Button
                                       variant="outline"
                                       size="icon"
-                                      onClick={() => setShowShare(true)}
+                                      onClick={handleSave}
                                       className="rounded-lg bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm hover:bg-purple-50 dark:hover:bg-purple-900/40 border-gray-200 dark:border-gray-700 shadow-sm"
                                     >
                                       <Share className="h-4 w-4" />
@@ -935,7 +925,7 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
                                   <TooltipContent className="bg-black/80 text-white py-1.5 px-3 text-xs rounded-lg">
                                     Share this prompt
                                   </TooltipContent>
-                                </Tooltip>
+                                </Tooltip> */}
                               </div>
                             )}
                           </div>
