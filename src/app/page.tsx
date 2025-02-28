@@ -26,7 +26,10 @@ import {
   Lightbulb,
 } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import {
+  GoogleGenerativeAI,
+  GenerateContentResult,
+} from "@google/generative-ai";
 import { Spinner } from "@/components/ui/spinner";
 import {
   Tooltip,
@@ -43,7 +46,6 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-  SheetClose,
 } from "@/components/ui/sheet";
 import { Slider } from "@/components/ui/slider"; // Assuming you have a Slider component
 import { Badge } from "@/components/ui/badge";
@@ -70,6 +72,11 @@ type Prompt = {
   created_at: string;
 };
 
+type ApiError = {
+  message: string;
+  [key: string]: unknown;
+};
+
 const PromptEnhancer = () => {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -87,7 +94,6 @@ const PromptEnhancer = () => {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [complexity, setComplexity] = useState<number[]>([1]); // Default to intermediate (1), range: 0-2
-  const [isLoadingVisible, setIsLoadingVisible] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [loadingMessage, setLoadingMessage] = useState("Initializing...");
 
@@ -116,9 +122,23 @@ const PromptEnhancer = () => {
       setUser(session?.user ?? null);
       if (session?.user) fetchUserPrompts(session.user.id);
     });
-
     return () => subscription.unsubscribe();
   }, [supabase]);
+
+  const fetchUserPrompts = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("prompts")
+        .select("id, input_prompt, output_response, created_at")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      setPrompts(data || []);
+    } catch (err) {
+      console.error("Error fetching prompts:", err);
+      setError("Failed to load prompts");
+    }
+  };
 
   const handleLogin = async () => {
     try {
@@ -150,21 +170,6 @@ const PromptEnhancer = () => {
     }
   };
 
-  const fetchUserPrompts = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from("prompts")
-        .select("id, input_prompt, output_response, created_at")
-        .eq("user_id", userId)
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      setPrompts(data || []);
-    } catch (err) {
-      console.error("Error fetching prompts:", err);
-      setError("Failed to load prompts");
-    }
-  };
-
   const enhancePrompt = async (text: string, complexityLevel: number) => {
     const hindiToEnglish: { [key: string]: string } = {
       बनाओ: "create",
@@ -184,7 +189,7 @@ const PromptEnhancer = () => {
 
     try {
       // Create a promise that rejects after timeout
-      const timeoutPromise = new Promise((_, reject) => {
+      const timeoutPromise = new Promise<never>((_, reject) => {
         setTimeout(
           () => reject(new Error("API request timed out")),
           API_TIMEOUT
@@ -218,12 +223,11 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
           generationConfig,
         }),
         timeoutPromise,
-      ])) as any;
-
+      ])) as GenerateContentResult;
       return result.response.text();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Enhancement error:", err);
-      if (err.message === "API request timed out") {
+      if (err instanceof Error && err.message === "API request timed out") {
         throw new Error("Request timed out. Please try again.");
       }
       throw new Error("Failed to enhance prompt");
@@ -283,7 +287,7 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
 
     setIsProcessing(true);
     setError(null);
-    setIsLoadingVisible(true);
+    setLoadingProgress(0);
 
     // Simulate progress for better UX
     const progressInterval = setInterval(() => {
@@ -311,14 +315,18 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
       await storePrompt(inputPrompt, enhanced);
       setLoadingProgress(100);
       setLoadingMessage("Complete!");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Enhancement error:", error);
-      setError(error.message || "Failed to enhance prompt. Please try again.");
+      if (error instanceof Error) {
+        setError(
+          error.message || "Failed to enhance prompt. Please try again."
+        );
+      } else {
+        setError("Failed to enhance prompt. Please try again.");
+      }
     } finally {
       clearInterval(progressInterval);
       setIsProcessing(false);
-      // Small delay before hiding loading indicator for smooth transition
-      setTimeout(() => setIsLoadingVisible(false), 500);
     }
   };
 
@@ -366,7 +374,7 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
       : text;
   };
 
-  function setShowShare(arg0: boolean): void {
+  function setShowShare(_: boolean): void {
     throw new Error("Function not implemented.");
   }
 
@@ -403,6 +411,9 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
       />
     </div>
   ));
+
+  // Add display name to the memoized component
+  MemoizedBackgroundElements.displayName = "MemoizedBackgroundElements";
 
   return (
     <TooltipProvider>
