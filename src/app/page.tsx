@@ -54,6 +54,12 @@ const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY!);
 const GEMINI_MODEL = "gemini-1.5-pro";
 const API_TIMEOUT = 15000; // 15 seconds timeout
 
+// Initialize Supabase client once
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
 type User = {
   id: string;
   email?: string;
@@ -72,11 +78,6 @@ type Prompt = {
 };
 
 const PromptEnhancer = () => {
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
-
   const [inputPrompt, setInputPrompt] = useState("");
   const [enhancedPrompt, setEnhancedPrompt] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -90,6 +91,7 @@ const PromptEnhancer = () => {
   const [complexity, setComplexity] = useState<number[]>([1]); // Default to intermediate (1), range: 0-2
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [loadingMessage, setLoadingMessage] = useState("Initializing...");
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -100,7 +102,7 @@ const PromptEnhancer = () => {
         } = await supabase.auth.getSession();
         if (error) throw error;
         setUser(session?.user ?? null);
-        if (session?.user) fetchUserPrompts(session.user.id);
+        // Don't fetch prompts here
       } catch (err) {
         console.error("Session error:", err);
         setError("Failed to check authentication status");
@@ -114,13 +116,21 @@ const PromptEnhancer = () => {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
-      if (session?.user) fetchUserPrompts(session.user.id);
+      // Don't fetch prompts here
     });
     return () => subscription.unsubscribe();
-  }, [supabase]);
+  }, []);
+
+  // Add a new useEffect to fetch prompts only when history sheet is opened
+  useEffect(() => {
+    if (isHistoryOpen && user) {
+      fetchUserPrompts(user.id);
+    }
+  }, [isHistoryOpen, user]);
 
   const fetchUserPrompts = async (userId: string) => {
     try {
+      setIsRefreshing(true);
       const { data, error } = await supabase
         .from("prompts")
         .select("id, input_prompt, output_response, created_at")
@@ -131,6 +141,8 @@ const PromptEnhancer = () => {
     } catch (err) {
       console.error("Error fetching prompts:", err);
       setError("Failed to load prompts");
+    } finally {
+      setIsRefreshing(false);
     }
   };
 
@@ -152,8 +164,10 @@ const PromptEnhancer = () => {
     setIsLoggingOut(true);
     try {
       setError(null);
+      console.log("Attempting to log out...");
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
+      console.log("Logout successful");
       setUser(null);
       setPrompts([]);
     } catch (err) {
@@ -182,6 +196,7 @@ const PromptEnhancer = () => {
     });
 
     try {
+      console.log("Enhancing prompt:", text);
       // Create a promise that rejects after timeout
       const timeoutPromise = new Promise<never>((_, reject) => {
         setTimeout(
@@ -218,6 +233,7 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
         }),
         timeoutPromise,
       ])) as GenerateContentResult;
+      console.log("Enhancement result:", result);
       return result.response.text();
     } catch (err: unknown) {
       console.error("Enhancement error:", err);
@@ -228,23 +244,31 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
     }
   };
 
-  const storePrompt = async (input: string, output: string) => {
+  const storePrompt = async (input: string, output: string): Promise<void> => {
     if (!user) {
       setError("Please login to save prompts");
-      return;
+      return Promise.reject("No user");
     }
 
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("prompts")
         .insert([
           { user_id: user.id, input_prompt: input, output_response: output },
-        ]);
+        ])
+        .select();
+
       if (error) throw error;
-      if (user) fetchUserPrompts(user.id);
+
+      // Update prompts state directly instead of fetching all prompts again
+      if (data && data.length > 0) {
+        setPrompts((prevPrompts) => [data[0], ...prevPrompts]);
+      }
+      return Promise.resolve();
     } catch (err) {
       console.error("Error saving prompt:", err);
       setError("Failed to save prompt");
+      return Promise.reject(err);
     }
   };
 
@@ -306,7 +330,8 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
     try {
       const enhanced = await enhancePrompt(inputPrompt, complexity[0]);
       setEnhancedPrompt(enhanced);
-      await storePrompt(inputPrompt, enhanced);
+      // Don't automatically store the prompt
+      // await storePrompt(inputPrompt, enhanced);
       setLoadingProgress(100);
       setLoadingMessage("Complete!");
     } catch (error: unknown) {
@@ -318,6 +343,7 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
       } else {
         setError("Failed to enhance prompt. Please try again.");
       }
+      setLoadingProgress(0);
     } finally {
       clearInterval(progressInterval);
       setIsProcessing(false);
@@ -369,7 +395,29 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
   };
 
   function handleSave(): void {
-    throw new Error("Function not implemented.");
+    if (!enhancedPrompt || !inputPrompt) {
+      setError("No prompt to save");
+      return;
+    }
+
+    storePrompt(inputPrompt, enhancedPrompt).then(() => {
+      // Show success message
+      setError(null);
+      const originalMessage = "Prompt saved successfully!";
+      setLoadingMessage(originalMessage);
+
+      // Create a temporary success message
+      const tempElement = document.createElement("div");
+      tempElement.className =
+        "fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg";
+      tempElement.textContent = "Prompt saved!";
+      document.body.appendChild(tempElement);
+
+      // Remove after 2 seconds
+      setTimeout(() => {
+        document.body.removeChild(tempElement);
+      }, 2000);
+    });
   }
 
   // Memoize expensive components to prevent re-renders
@@ -456,6 +504,20 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
                             <History className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                             <span>Your Prompt History</span>
                           </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => user && fetchUserPrompts(user.id)}
+                            disabled={isRefreshing}
+                            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                          >
+                            {isRefreshing ? (
+                              <Spinner className="w-4 h-4 mr-1" />
+                            ) : (
+                              <ArrowRight className="w-4 h-4 rotate-180 mr-1" />
+                            )}
+                            Refresh
+                          </Button>
                         </SheetTitle>
                       </SheetHeader>
                       {prompts.length === 0 ? (
@@ -910,22 +972,6 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
                                     {copied ? "Copied!" : "Copy to clipboard"}
                                   </TooltipContent>
                                 </Tooltip>
-
-                                {/* <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button
-                                      variant="outline"
-                                      size="icon"
-                                      onClick={handleSave}
-                                      className="rounded-lg bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm hover:bg-purple-50 dark:hover:bg-purple-900/40 border-gray-200 dark:border-gray-700 shadow-sm"
-                                    >
-                                      <Share className="h-4 w-4" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent className="bg-black/80 text-white py-1.5 px-3 text-xs rounded-lg">
-                                    Share this prompt
-                                  </TooltipContent>
-                                </Tooltip> */}
                               </div>
                             )}
                           </div>
@@ -950,7 +996,8 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
                                 variant="ghost"
                                 size="sm"
                                 className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                                onClick={() => handleSave()}
+                                onClick={handleSave}
+                                disabled={!enhancedPrompt}
                               >
                                 <BookmarkPlus className="w-4 h-4 mr-1.5" />
                                 Save
