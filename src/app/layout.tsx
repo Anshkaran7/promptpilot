@@ -181,6 +181,10 @@ export default function RootLayout({
         <link rel="canonical" href="https://promptpilot.infinitylinkage.com" />
         <meta name="author" content="Ansh Karan" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+          name="google-site-verification"
+          content="z_CmteBHB8HMM6jq9eNHxtGe4bsb4qRtABbFyEqOZ_I"
+        />
       </head>
       <body className={montserrat.className}>
         <ThemeProvider
