@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     "professional prompt writer",
   ],
   verification: {
-    google: "your-google-verification-code", // Add your Google Search Console verification code
+    google: "google2fa2d0c2600bb2f5.html",
   },
   authors: [{ name: "Ansh Karan", url: "https://github.com/Anshkaran7" }],
   creator: "Ansh Karan",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://promptpilot7.vercel.app/",
+    url: "https://promptpilot.infinitylinkage.com/",
     title: "PromptPilot - AI Prompt Engineering & Enhancement Tool",
     description:
       "Transform simple instructions into powerful, detailed AI prompts with PromptPilot. Supports English & Hindi with Gemini AI technology.",
@@ -66,8 +66,8 @@ export const metadata: Metadata = {
     description:
       "Transform simple instructions into powerful, detailed AI prompts with PromptPilot. Supports English & Hindi with Gemini AI technology.",
     images: ["/og-image.png"],
-    creator: "@anshkaran7",
-    site: "@promptpilot",
+    creator: "@itsmeekaran",
+    site: "@itsmeekaran",
   },
   robots: {
     index: true,
@@ -81,7 +81,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "https://promptpilot7.vercel.app",
+    canonical: "https://promptpilot.infinitylinkage.com",
   },
   manifest: "/manifest.json",
   icons: {
@@ -129,9 +129,10 @@ export default function RootLayout({
                 url: "https://github.com/Anshkaran7",
               },
               inLanguage: ["en", "hi"],
-              url: "https://promptpilot7.vercel.app",
-              image: "https://promptpilot7.vercel.app/og-image.png",
-              screenshot: "https://promptpilot7.vercel.app/screenshot.png",
+              url: "https://promptpilot.infinitylinkage.com",
+              image: "https://promptpilot.infinitylinkage.com/PromptPilot.jpg",
+              screenshot:
+                "https://promptpilot.infinitylinkage.com/PromptPilot.jpg",
               featureList: [
                 "Multilingual Support (English & Hindi)",
                 "AI-Powered Prompt Enhancement",
@@ -144,28 +145,40 @@ export default function RootLayout({
         />
 
         {/* Social Media Preview */}
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://promptpilot7.vercel.app/" />
         <meta
           property="og:title"
-          content="PromptPilot - Best AI Prompt Engineering Tool"
+          content="PromptPilot - Your AI Prompt Co-Pilot"
         />
         <meta
           property="og:description"
-          content="Transform your simple ideas into powerful, detailed AI prompts with PromptPilot. Free tool with English & Hindi support."
+          content="Transform your simple ideas into powerful, detailed AI prompts with PromptPilot. Supports English & Hindi, smart AI-powered refinement, and prompt history to save and reuse."
+        />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:url"
+          content="https://promptpilot.infinitylinkage.com/"
         />
         <meta
           property="og:image"
-          content="https://promptpilot7.vercel.app/og-image.png"
+          content="https://promptpilot.infinitylinkage.com/PromptPilot.jpg"
         />
+        <meta
+          property="og:image:alt"
+          content="PromptPilot - AI Prompt Enhancement Tool"
+        />
+        <meta property="og:site_name" content="PromptPilot" />
+        <meta property="og:locale" content="en_US" />
 
         {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@promptpilot" />
-        <meta name="twitter:creator" content="@anshkaran7" />
+        <meta
+          name="twitter:card"
+          content="Transform your simple ideas into powerful, detailed AI prompts with PromptPilot. Supports English & Hindi, smart AI-powered refinement, and prompt history to save and reuse"
+        />
+        <meta name="twitter:site" content="@itsmeekaran" />
+        <meta name="twitter:creator" content="@itsmeekaran" />
 
         {/* Additional SEO Meta Tags */}
-        <link rel="canonical" href="https://promptpilot7.vercel.app" />
+        <link rel="canonical" href="https://promptpilot.infinitylinkage.com" />
         <meta name="author" content="Ansh Karan" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
