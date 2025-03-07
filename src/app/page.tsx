@@ -1130,6 +1130,15 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
               <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                 © {new Date().getFullYear()} PromptPilot. Powered by AI.
               </p>
+
+              <a
+                href="https://karandev.in"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
+              >
+                Developer and Designed by Karan
+              </a>
             </div>
           </div>
         </footer>
