@@ -48,6 +48,7 @@ import {
 } from "@/components/ui/sheet";
 import { Slider } from "@/components/ui/slider"; // Assuming you have a Slider component
 import { Badge } from "@/components/ui/badge";
+import Image from "next/image";
 
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY!);
@@ -469,7 +470,14 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <Sparkles className="w-4 h-4 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" />
+                <Image
+                  src={"/logo.png"}
+                  width={1000}
+                  height={1000}
+                  className="w-4 h-4 sm:w-8 sm:h-8 object-contain"
+                  alt="PromptPilot Logo"
+                />
+                {/* <Sparkles className="w-4 h-4 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" /> */}
                 <span className="text-base sm:text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
                   PromptPilot
                 </span>
@@ -1107,7 +1115,14 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
             </div>
             <div className="flex flex-col items-center justify-center">
               <div className="flex items-center gap-2 mb-2">
-                <Sparkles className="w-4 h-4 text-blue-500 dark:text-blue-400" />
+                {/* <Sparkles className="w-4 h-4 text-blue-500 dark:text-blue-400" /> */}
+                <Image
+                  src={"/logo.png"}
+                  width={1000}
+                  height={1000}
+                  className="w-4 h-4 sm:w-8 sm:h-8 object-contain"
+                  alt="PromptPilot Logo"
+                />
                 <span className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
                   PromptPilot
                 </span>
