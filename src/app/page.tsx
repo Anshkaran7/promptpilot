@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -52,7 +52,7 @@ import Image from "next/image";
 
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY!);
-const GEMINI_MODEL = "gemini-1.5-pro";
+const GEMINI_MODEL = "gemini-1.5-flash";
 const API_TIMEOUT = 15000; // 15 seconds timeout
 
 // Initialize Supabase client once
@@ -93,6 +93,13 @@ const PromptEnhancer = () => {
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [loadingMessage, setLoadingMessage] = useState("Initializing...");
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isQuotaExceeded, setIsQuotaExceeded] = useState(false);
+
+  // Rate limiting implementation
+  const lastRequestTime = useRef<number | null>(null);
+  const minRequestInterval = 30000; // 30 seconds between requests (reduced from 60s for gemini-2.0-flash)
+  const [cooldownRemaining, setCooldownRemaining] = useState(0);
+  const cooldownTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -180,6 +187,7 @@ const PromptEnhancer = () => {
   };
 
   const enhancePrompt = async (text: string, complexityLevel: number) => {
+    // Expanded Hindi to English translations
     const hindiToEnglish: { [key: string]: string } = {
       बनाओ: "create",
       लिखो: "write",
@@ -187,14 +195,54 @@ const PromptEnhancer = () => {
       "क्या है": "what is",
       "विधि बताएं": "explain how to make",
       "कैसे बनाएं": "how to make",
+      "मुझे बताओ": "tell me about",
+      "उदाहरण दो": "give examples of",
+      "तुलना करें": "compare",
+      "विश्लेषण करें": "analyze",
+      "सुझाव दें": "suggest",
+      "समीक्षा करें": "review",
     };
 
+    // Detect prompt type for better context handling
+    const promptTypes = [
+      { pattern: /(write|create|generate|draft|compose)/i, type: "creative" },
+      {
+        pattern: /(explain|what is|how to|tell me about|describe)/i,
+        type: "explanatory",
+      },
+      {
+        pattern: /(compare|versus|vs|difference|similarities)/i,
+        type: "comparative",
+      },
+      {
+        pattern: /(analyze|review|critique|evaluate|assess)/i,
+        type: "analytical",
+      },
+      {
+        pattern: /(list|steps|ways to|methods|techniques)/i,
+        type: "structured",
+      },
+    ];
+
+    // Translate Hindi phrases to English
     let translatedText = text;
     Object.entries(hindiToEnglish).forEach(([hindi, english]) => {
-      if (text.toLowerCase().includes(hindi)) {
-        translatedText = text.replace(new RegExp(hindi, "i"), english);
+      if (text.toLowerCase().includes(hindi.toLowerCase())) {
+        translatedText = translatedText.replace(
+          new RegExp(hindi, "gi"),
+          english
+        );
       }
     });
+
+    // Detect prompt type
+    let detectedType = "general";
+    for (const { pattern, type } of promptTypes) {
+      if (pattern.test(translatedText)) {
+        detectedType = type;
+        break;
+      }
+    }
 
     try {
       console.log("Enhancing prompt:", text);
@@ -208,38 +256,147 @@ const PromptEnhancer = () => {
 
       const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
 
-      // Simplify the prompt to reduce processing time
-      const complexityDescriptions = [
-        "basic: concise with minimal details",
-        "intermediate: detailed with clear requirements",
-        "advanced: comprehensive with extensive context",
+      // Define complexity levels with more detailed guidance
+      const complexityGuides = [
+        {
+          level: "basic",
+          description: "concise with clear instructions",
+          wordLimit: 150,
+          structure: "Simple and direct with minimal elaboration",
+        },
+        {
+          level: "intermediate",
+          description: "detailed with specific parameters and context",
+          wordLimit: 200,
+          structure: "Well-structured with clear sections and details",
+        },
+        {
+          level: "advanced",
+          description:
+            "comprehensive with extensive context, examples, and nuanced instructions",
+          wordLimit: 300,
+          structure:
+            "Highly detailed with specific guidance, constraints, and creative elements",
+        },
       ];
 
-      const prompt = `Transform this prompt into a ${complexityDescriptions[complexityLevel]}: "${translatedText}"
-      
-Make it clear, specific, and well-structured. Keep it under 200 words.`;
+      // Type-specific enhancements
+      const typeGuidance = {
+        creative:
+          "Include specific style, tone, format, and audience guidance.",
+        explanatory:
+          "Structure with clear progression from basic to advanced concepts, include examples.",
+        comparative:
+          "Specify dimensions for comparison and desired outcome format.",
+        analytical:
+          "Include criteria for analysis and expected depth of critique.",
+        structured:
+          "Specify numbered steps, prioritization, and implementation details.",
+        general: "Provide clear context, goals, and expected output format.",
+      };
+
+      const selectedComplexity = complexityGuides[complexityLevel];
+
+      // Create enhanced system prompt
+      const prompt = `Transform this user prompt into a ${
+        selectedComplexity.level
+      } AI prompt: "${translatedText}"
+
+Prompt type detected: ${detectedType}
+${typeGuidance[detectedType as keyof typeof typeGuidance]}
+
+YOUR TASK:
+1. Make the prompt clear, specific, and well-structured
+2. Add relevant context and background information
+3. Specify desired tone, style, and format where appropriate
+4. Include any necessary constraints or requirements
+5. Keep it under ${selectedComplexity.wordLimit} words
+6. Ensure the prompt follows a ${selectedComplexity.structure}
+
+IMPORTANT: Maintain the original intent but make it more effective for AI responses.`;
 
       const generationConfig = {
         temperature: 0.7,
         topK: 40,
         topP: 0.95,
-        maxOutputTokens: 512, // Reduced token limit for faster response
+        maxOutputTokens: 512,
       };
 
-      // Race between API call and timeout
-      const result = (await Promise.race([
-        model.generateContent({
-          contents: [{ role: "user", parts: [{ text: prompt }] }],
-          generationConfig,
-        }),
-        timeoutPromise,
-      ])) as GenerateContentResult;
-      console.log("Enhancement result:", result);
-      return result.response.text();
+      try {
+        // Race between API call and timeout
+        const result = (await Promise.race([
+          model.generateContent({
+            contents: [{ role: "user", parts: [{ text: prompt }] }],
+            generationConfig,
+          }),
+          timeoutPromise,
+        ])) as GenerateContentResult;
+        console.log("Enhancement result:", result);
+        return result.response.text();
+      } catch (err: unknown) {
+        // Check API errors
+        const error = err as Error;
+        console.error("API Error details:", error.message);
+
+        // Check for API key expired error
+        if (
+          error.message &&
+          (error.message.includes("API key expired") ||
+            error.message.includes("API_KEY_INVALID"))
+        ) {
+          console.error("API key expired error:", error);
+          throw new Error(
+            "The API key has expired. Please contact the developer to update the API key."
+          );
+        }
+
+        // Check for quota error
+        if (
+          error.message &&
+          error.message.includes("429") &&
+          error.message.includes("quota")
+        ) {
+          console.error("Quota error:", error);
+          throw new Error(
+            "Google Gemini API quota exceeded. Please wait before trying again, or try a shorter prompt."
+          );
+        }
+
+        if (error.message === "API request timed out") {
+          throw new Error(
+            "Request took too long. Please try again with a simpler prompt."
+          );
+        }
+
+        // Handle other potential API errors with more descriptive messages
+        if (error.message.includes("400")) {
+          throw new Error(
+            "The API encountered an error with your request. Try simplifying your prompt."
+          );
+        }
+
+        if (error.message.includes("401") || error.message.includes("403")) {
+          throw new Error(
+            "Authentication error with the AI service. Please try again later or contact support."
+          );
+        }
+
+        if (
+          error.message.includes("500") ||
+          error.message.includes("502") ||
+          error.message.includes("503")
+        ) {
+          throw new Error(
+            "The AI service is currently experiencing issues. Please try again later."
+          );
+        }
+
+        throw error;
+      }
     } catch (err: unknown) {
       console.error("Enhancement error:", err);
-      if (err instanceof Error && err.message === "API request timed out") {
-        throw new Error("Request timed out. Please try again.");
+      if (err instanceof Error) {
+        throw err;
       }
       throw new Error("Failed to enhance prompt");
     }
@@ -293,6 +450,34 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
     }
   };
 
+  // Update cooldown timer
+  useEffect(() => {
+    if (lastRequestTime.current) {
+      const updateCooldown = () => {
+        const now = Date.now();
+        const elapsed = now - lastRequestTime.current!;
+        if (elapsed < minRequestInterval) {
+          const remaining = Math.ceil((minRequestInterval - elapsed) / 1000);
+          setCooldownRemaining(remaining);
+          cooldownTimerRef.current = setTimeout(updateCooldown, 1000);
+        } else {
+          setCooldownRemaining(0);
+          if (cooldownTimerRef.current) {
+            clearTimeout(cooldownTimerRef.current);
+            cooldownTimerRef.current = null;
+          }
+        }
+      };
+
+      updateCooldown();
+      return () => {
+        if (cooldownTimerRef.current) {
+          clearTimeout(cooldownTimerRef.current);
+        }
+      };
+    }
+  }, [lastRequestTime.current, minRequestInterval]);
+
   const handleEnhance = async () => {
     if (!user) {
       setError("Please login to enhance prompts");
@@ -304,9 +489,26 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
       return;
     }
 
+    // Rate limiting check
+    const now = Date.now();
+    if (
+      lastRequestTime.current &&
+      now - lastRequestTime.current < minRequestInterval
+    ) {
+      const remainingTime = Math.ceil(
+        (minRequestInterval - (now - lastRequestTime.current)) / 1000
+      );
+      setError(
+        `Please wait ${remainingTime} seconds before making another request to avoid API limits`
+      );
+      setIsQuotaExceeded(true);
+      return;
+    }
+
     setIsProcessing(true);
     setError(null);
     setLoadingProgress(0);
+    setIsQuotaExceeded(false);
 
     // Simulate progress for better UX
     const progressInterval = setInterval(() => {
@@ -329,6 +531,9 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
     }, 800);
 
     try {
+      // Record the request time
+      lastRequestTime.current = Date.now();
+
       const enhanced = await enhancePrompt(inputPrompt, complexity[0]);
       setEnhancedPrompt(enhanced);
       // Don't automatically store the prompt
@@ -338,9 +543,28 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
     } catch (error: unknown) {
       console.error("Enhancement error:", error);
       if (error instanceof Error) {
-        setError(
-          error.message || "Failed to enhance prompt. Please try again."
-        );
+        // Check for specific error types
+        if (
+          error.message.includes("API key expired") ||
+          error.message.includes("API_KEY_INVALID")
+        ) {
+          setError(
+            "The API key has expired. The developer needs to update the API key. Try again later."
+          );
+        } else if (error.message.includes("quota exceeded")) {
+          setIsQuotaExceeded(true);
+          setError(
+            "Google Gemini API quota exceeded. Please wait before trying again, or try a shorter prompt."
+          );
+        } else if (error.message.includes("Authentication error")) {
+          setError(
+            "Authentication error with the AI service. Please try again later or contact support."
+          );
+        } else {
+          setError(
+            error.message || "Failed to enhance prompt. Please try again."
+          );
+        }
       } else {
         setError("Failed to enhance prompt. Please try again.");
       }
@@ -453,6 +677,10 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
 
   // Add display name to the memoized component
   MemoizedBackgroundElements.displayName = "MemoizedBackgroundElements";
+
+  // Determine if button should be disabled due to cooldown
+  const isButtonDisabled =
+    !inputPrompt || isProcessing || !user || cooldownRemaining > 0;
 
   return (
     <TooltipProvider>
@@ -738,16 +966,27 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
                 className="max-w-5xl mx-auto mb-6"
               >
                 <Alert
-                  variant="destructive"
+                  variant={isQuotaExceeded ? "default" : "destructive"}
                   className="flex items-center gap-2"
                 >
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>{error}</AlertDescription>
+                  {isQuotaExceeded && (
+                    <div className="ml-4 text-xs text-gray-500 dark:text-gray-400">
+                      <p>
+                        Try again in about a minute or reduce your prompt
+                        complexity.
+                      </p>
+                    </div>
+                  )}
                   <Button
                     variant="ghost"
                     size="icon"
                     className="ml-auto h-6 w-6"
-                    onClick={() => setError(null)}
+                    onClick={() => {
+                      setError(null);
+                      setIsQuotaExceeded(false);
+                    }}
                   >
                     <X className="h-3 w-3" />
                   </Button>
@@ -835,7 +1074,7 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
                   </div>
                   <Button
                     onClick={handleEnhance}
-                    disabled={!inputPrompt || isProcessing || !user}
+                    disabled={isButtonDisabled}
                     className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl py-6 shadow-lg hover:shadow-blue-500/30 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
                   >
                     {isProcessing ? (
@@ -852,6 +1091,11 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
                         <Spinner className="w-5 h-5" />
                         Enhancing your prompt...
                       </motion.span>
+                    ) : cooldownRemaining > 0 ? (
+                      <span className="flex items-center gap-2 text-base font-medium">
+                        <Clock className="w-5 h-5 mr-1" />
+                        Cooldown: {cooldownRemaining}s
+                      </span>
                     ) : (
                       <span className="flex items-center gap-2 text-base font-medium">
                         <Sparkles className="w-5 h-5 mr-1" />
@@ -1076,6 +1320,16 @@ Make it clear, specific, and well-structured. Keep it under 200 words.`;
               ))}
             </div>
           </motion.section>
+
+          {/* Model Information */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-center text-xs text-gray-500 dark:text-gray-400 mt-6"
+          >
+            Powered by Google's Gemini 2.0 Flash AI model
+          </motion.div>
         </main>
 
         {/* Footer */}
