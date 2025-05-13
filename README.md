@@ -24,6 +24,7 @@
   - Context-aware translations
   - Regional language understanding
 
+
 - 💡 **Smart Features**
 
   - Real-time prompt analysis
