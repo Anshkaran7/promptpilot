@@ -1328,7 +1328,7 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-center text-xs text-gray-500 dark:text-gray-400 mt-6"
           >
-            Powered by Google's Gemini 2.0 Flash AI model
+            Powered by Google&apos;s Gemini 2.0 Flash AI model
           </motion.div>
         </main>
 
