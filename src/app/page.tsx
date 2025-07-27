@@ -19,11 +19,9 @@ import {
   X,
   Clock,
   Trash2,
-  Sparkle,
   Check,
   BookmarkPlus,
   Lightbulb,
-  Coffee,
 } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
 import {
@@ -603,15 +601,6 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
       minute: "2-digit",
     }).format(date);
   };
-
-  const examples = [
-    {
-      text: "write a story about a magical forest",
-      label: "Story about magical forest",
-    },
-    { text: "explain quantum computing", label: "Explain quantum computing" },
-    { text: "एक केक बनाने की विधि बताएं", label: "एक केक बनाने की विधि" },
-  ];
 
   const truncateText = (text: string, maxLength = 60) => {
     if (!text) return "";
