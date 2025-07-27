@@ -23,6 +23,7 @@ import {
   Check,
   BookmarkPlus,
   Lightbulb,
+  Coffee,
 } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
 import {
@@ -684,12 +685,103 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
 
   return (
     <TooltipProvider>
-      <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100 via-purple-50 to-white dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900 px-2 sm:px-4 md:px-6 overflow-hidden relative">
+      <div className="min-h-screen bg-slate-50 dark:bg-[#0F0F0F] px-2 sm:px-4 md:px-6 overflow-hidden relative">
         {/* Background Elements - Memoized to prevent re-renders */}
         <MemoizedBackgroundElements />
 
+        {/* Marquee Banner */}
+        <div className="fixed top-0 left-0 right-0 z-50 bg-emerald-600 text-white py-2 overflow-hidden">
+          <motion.div
+            initial={{ x: "100%" }}
+            animate={{ x: "-100%" }}
+            transition={{
+              duration: 40,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+            className="flex items-center gap-4 whitespace-nowrap"
+          >
+            <span className="text-sm font-medium">🚀</span>
+            <span className="text-sm font-medium">
+              I made a new tool! Check it out:
+            </span>
+            <a
+              href="https://git-aura.karandev.in"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-bold underline hover:no-underline transition-all duration-200"
+            >
+              git-aura.karandev.in
+            </a>
+            <span className="text-sm font-medium">
+              ✨ Flex your GitHub aura banner! ✨
+            </span>
+            <span className="text-sm font-medium">🚀</span>
+            <span className="text-sm font-medium">
+              I made a new tool! Check it out:
+            </span>
+            <a
+              href="https://git-aura.karandev.in"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-bold underline hover:no-underline transition-all duration-200"
+            >
+              git-aura.karandev.in
+            </a>
+            <span className="text-sm font-medium">
+              ✨ Flex your GitHub aura! ✨
+            </span>
+            <span className="text-sm font-medium">🚀</span>
+            <span className="text-sm font-medium">
+              I made a new tool! Check it out:
+            </span>
+            <a
+              href="https://git-aura.karandev.in"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-bold underline hover:no-underline transition-all duration-200"
+            >
+              git-aura.karandev.in
+            </a>
+            <span className="text-sm font-medium">
+              ✨ Flex your GitHub aura! ✨
+            </span>
+
+            <span className="text-sm font-medium">🚀</span>
+            <span className="text-sm font-medium">
+              I made a new tool! Check it out:
+            </span>
+            <a
+              href="https://git-aura.karandev.in"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-bold underline hover:no-underline transition-all duration-200"
+            >
+              git-aura.karandev.in
+            </a>
+            <span className="text-sm font-medium">
+              ✨ Flex your GitHub aura! ✨
+            </span>
+            <span className="text-sm font-medium">🚀</span>
+            <span className="text-sm font-medium">
+              I made a new tool! Check it out:
+            </span>
+            <a
+              href="https://git-aura.karandev.in"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-bold underline hover:no-underline transition-all duration-200"
+            >
+              git-aura.karandev.in
+            </a>
+            <span className="text-sm font-medium">
+              ✨ Flex your GitHub aura banner! ✨
+            </span>
+          </motion.div>
+        </div>
+
         {/* Navigation */}
-        <header className="fixed top-0 left-0 right-0 z-50 bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border-b border-gray-200/20 dark:border-gray-700/30">
+        <header className="fixed top-8 left-0 right-0 z-50 bg-white/95 dark:bg-[#0F0F0F]/95 backdrop-blur-lg border-b border-slate-200 dark:border-slate-800">
           <nav className="container mx-auto px-2 sm:px-4 py-2 sm:py-3">
             <div className="flex justify-between items-center">
               <motion.div
@@ -699,14 +791,14 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
                 transition={{ duration: 0.5 }}
               >
                 <Image
-                  src={"/logo.png"}
+                  src={"/icon.png"}
                   width={1000}
                   height={1000}
                   className="w-4 h-4 sm:w-8 sm:h-8 object-contain"
                   alt="PromptPilot Logo"
                 />
                 {/* <Sparkles className="w-4 h-4 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" /> */}
-                <span className="text-base sm:text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+                <span className="text-base sm:text-lg font-bold text-emerald-600 dark:text-emerald-400">
                   PromptPilot
                 </span>
               </motion.div>
@@ -850,7 +942,7 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
                 )}
                 {user ? (
                   <div className="flex items-center">
-                    <div className="flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white/20 backdrop-blur-md shadow-lg dark:bg-gray-800/50 border border-gray-200/20 dark:border-gray-700/20">
+                    <div className="flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-slate-100 dark:bg-[#1A1A1A] border border-slate-200 dark:border-slate-700">
                       {user.user_metadata?.avatar_url && (
                         <img
                           src={
@@ -883,7 +975,7 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
                 ) : (
                   <Button
                     onClick={handleLogin}
-                    className="flex items-center gap-1 sm:gap-2 rounded-full text-sm sm:text-base bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-blue-500/20 transition-all duration-300"
+                    className="flex items-center gap-1 sm:gap-2 rounded-full text-sm sm:text-base bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg hover:shadow-emerald-500/20 transition-all duration-300"
                   >
                     <LogIn className="w-3 h-3 sm:w-4 sm:h-4" />
                     <span className="hidden sm:inline">Login with Google</span>
@@ -891,26 +983,38 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
                   </Button>
                 )}
                 <ThemeToggle />
+                <motion.a
+                  href="https://github.com/Anshkaran7/promptpilot"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 hover:bg-slate-700 dark:bg-[#1A1A1A] dark:hover:bg-[#2A2A2A] text-white text-sm font-medium shadow-lg hover:shadow-slate-500/25 transition-all duration-300"
+                >
+                  <Github className="w-4 h-4" />
+                  <span className="hidden sm:inline">Star on GitHub</span>
+                  <span className="sm:hidden">Star</span>
+                </motion.a>
               </motion.div>
             </div>
           </nav>
         </header>
 
-        <main className="container mx-auto py-8 sm:py-12 mt-16">
+        <main className="container mx-auto py-4 sm:py-6 mt-24">
           {/* Hero Section */}
           <motion.section
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-8 sm:mb-16 pt-4 sm:pt-8"
+            className="text-center mb-6 sm:mb-8 pt-2 sm:pt-4"
           >
-            <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold mb-4 sm:mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 tracking-tight leading-tight">
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4 text-slate-800 dark:text-slate-100 tracking-tight leading-tight">
               Your AI Prompt Co-Pilot
             </h1>
-            <p className="text-lg sm:text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 sm:mb-12 max-w-3xl mx-auto leading-relaxed px-4">
+            <p className="text-base sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed px-4">
               Transform your simple ideas into powerful, detailed AI prompts
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto px-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-3xl mx-auto px-4">
               {[
                 {
                   icon: Globe,
@@ -938,15 +1042,15 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
                     boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
                   }}
                 >
-                  <Card className="flex flex-col items-center gap-4 p-6 transition-all duration-300 backdrop-blur-md bg-white/20 dark:bg-gray-800/30 border-gray-200/20 dark:border-gray-700/20 rounded-2xl h-full">
-                    <div className="p-3 rounded-full bg-blue-100/50 dark:bg-blue-900/20">
-                      <feature.icon className="w-6 h-6 sm:w-8 sm:h-8 text-blue-500 dark:text-blue-400" />
+                  <Card className="flex flex-col items-center gap-3 p-4 transition-all duration-300 bg-white dark:bg-[#1A1A1A] border-slate-200 dark:border-slate-800 rounded-xl h-full hover:shadow-lg">
+                    <div className="p-2 rounded-full bg-emerald-100 dark:bg-emerald-900/30">
+                      <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600 dark:text-emerald-400" />
                     </div>
                     <div className="text-center">
-                      <h3 className="font-semibold text-lg dark:text-gray-100 mb-1">
+                      <h3 className="font-semibold text-sm text-slate-800 dark:text-slate-100 mb-1">
                         {feature.title}
                       </h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <p className="text-xs text-slate-600 dark:text-slate-400">
                         {feature.description}
                       </p>
                     </div>
@@ -1000,17 +1104,17 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="max-w-6xl mx-auto px-4 py-6 sm:py-10"
+            className="max-w-5xl mx-auto px-4 py-4 sm:py-6"
           >
-            <Card className="p-5 sm:p-7 md:p-8 shadow-2xl bg-white/10 dark:bg-gray-800/10 backdrop-blur-lg border border-gray-200/30 dark:border-gray-700/30 rounded-2xl sm:rounded-3xl overflow-hidden">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            <Card className="p-4 sm:p-6 md:p-7 shadow-xl bg-white dark:bg-[#1A1A1A] border-slate-200 dark:border-slate-800 rounded-2xl sm:rounded-3xl overflow-hidden">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
                 {/* Input Section */}
-                <div className="space-y-5">
+                <div className="space-y-4">
                   <div className="flex items-center justify-between flex-wrap gap-2">
-                    <h2 className="text-xl font-semibold dark:text-gray-50 flex items-center gap-2">
-                      <div className="inline-block w-2 h-7 bg-blue-500 rounded-full mr-2 animate-pulse"></div>
+                    <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                      <div className="inline-block w-2 h-6 bg-emerald-500 rounded-full mr-2 animate-pulse"></div>
                       Your Prompt
-                      <span className="text-sm text-gray-500 dark:text-gray-400 font-normal ml-1">
+                      <span className="text-xs text-slate-500 dark:text-slate-400 font-normal ml-1">
                         (English or Hindi)
                       </span>
                     </h2>
@@ -1018,7 +1122,7 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-sm transition-all duration-200"
+                        className="text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-sm transition-all duration-200"
                         onClick={() => setIsHistoryOpen(true)}
                       >
                         <History className="w-3.5 h-3.5 mr-1.5" />
@@ -1030,25 +1134,25 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
                     placeholder="Enter your prompt in English or Hindi..."
                     value={inputPrompt}
                     onChange={(e) => setInputPrompt(e.target.value)}
-                    className="min-h-[180px] sm:min-h-[220px] resize-none dark:bg-gray-900/60 dark:border-gray-700/70 dark:text-gray-100 text-base rounded-xl focus:ring-2 focus:ring-blue-500/50 transition-all duration-300 placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                    className="min-h-[140px] sm:min-h-[160px] resize-none bg-slate-50 dark:bg-[#0F0F0F] border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-sm rounded-xl focus:ring-2 focus:ring-emerald-500/50 transition-all duration-300 placeholder:text-slate-400 dark:placeholder:text-slate-500"
                   />
                   {/* Complexity Controls */}
-                  <div className="space-y-3 bg-gray-50/70 dark:bg-gray-900/40 p-4 rounded-xl border border-gray-200/50 dark:border-gray-700/50">
+                  <div className="space-y-2 bg-slate-100 dark:bg-[#1A1A1A] p-3 rounded-xl border border-slate-200 dark:border-slate-700">
                     <div className="flex justify-between items-center">
-                      <label className="text-sm font-medium dark:text-gray-100 flex items-center gap-1.5">
-                        <Zap className="w-4 h-4 text-blue-500" />
+                      <label className="text-xs font-medium text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                        <Zap className="w-3 h-3 text-emerald-500" />
                         Prompt Complexity
                       </label>
                       <Badge
                         variant="outline"
                         className={`
-              px-3 py-1 text-xs font-medium rounded-full 
+              px-2 py-0.5 text-xs font-medium rounded-full 
               ${
                 complexity[0] === 0
-                  ? "bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-300"
+                  ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-300"
                   : complexity[0] === 1
-                  ? "bg-purple-50 text-purple-600 dark:bg-purple-900/30 dark:text-purple-300"
-                  : "bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-300"
+                  ? "bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-300"
+                  : "bg-rose-50 text-rose-600 dark:bg-rose-900/30 dark:text-rose-300"
               }`}
                       >
                         {complexity[0] === 0
@@ -1066,16 +1170,16 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
                       className="w-full"
                       disabled={!user || isProcessing}
                     />
-                    <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
-                      <span>Basic</span>
-                      <span>Intermediate</span>
-                      <span>Advanced</span>
+                    <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400">
+                      <span className="text-xs">Basic</span>
+                      <span className="text-xs">Intermediate</span>
+                      <span className="text-xs">Advanced</span>
                     </div>
                   </div>
                   <Button
                     onClick={handleEnhance}
                     disabled={isButtonDisabled}
-                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl py-6 shadow-lg hover:shadow-blue-500/30 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
+                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl py-4 shadow-lg hover:shadow-emerald-500/30 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
                   >
                     {isProcessing ? (
                       <motion.span
@@ -1109,20 +1213,20 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.2 }}
-                      className="text-sm text-center text-amber-600 dark:text-amber-400 bg-amber-50/70 dark:bg-amber-900/30 p-3 rounded-lg border border-amber-100 dark:border-amber-800/50"
+                      className="text-xs text-center text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 p-2 rounded-lg border border-amber-200 dark:border-amber-800"
                     >
-                      <AlertCircle className="inline-block w-4 h-4 mr-1.5 mb-0.5" />
+                      <AlertCircle className="inline-block w-3 h-3 mr-1 mb-0.5" />
                       Please login to enhance prompts and access all features
                     </motion.p>
                   )}
                 </div>
 
                 {/* Output Section */}
-                <div className="space-y-5">
-                  <h2 className="text-xl font-semibold dark:text-gray-50 flex items-center gap-2">
-                    <div className="inline-block w-2 h-7 bg-purple-500 rounded-full mr-2"></div>
+                <div className="space-y-4">
+                  <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                    <div className="inline-block w-2 h-6 bg-amber-500 rounded-full mr-2"></div>
                     Enhanced Prompt
-                    <span className="text-sm text-gray-500 dark:text-gray-400 font-normal ml-1">
+                    <span className="text-xs text-slate-500 dark:text-slate-400 font-normal ml-1">
                       (AI Enhanced)
                     </span>
                   </h2>
@@ -1134,7 +1238,7 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
-                          className="min-h-[220px] sm:min-h-[280px] flex flex-col items-center justify-center bg-gray-50/70 dark:bg-gray-900/60 rounded-xl border border-gray-200/50 dark:border-gray-700/50 gap-4"
+                          className="min-h-[160px] sm:min-h-[200px] flex flex-col items-center justify-center bg-slate-100 dark:bg-[#1A1A1A] rounded-xl border border-slate-200 dark:border-slate-700 gap-3"
                         >
                           {/* Improved loading indicator with progress */}
                           <div className="w-full max-w-xs flex flex-col items-center">
@@ -1177,7 +1281,7 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
                               />
                             </div>
 
-                            <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
+                            <p className="text-xs text-slate-600 dark:text-slate-300 text-center">
                               {loadingMessage}
                             </p>
                           </div>
@@ -1194,7 +1298,7 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
                             <Textarea
                               value={enhancedPrompt}
                               readOnly
-                              className="min-h-[220px] sm:min-h-[280px] resize-none bg-gray-50/70 dark:bg-gray-900/60 border-gray-200/50 dark:border-gray-700/50 dark:text-gray-100 text-base rounded-xl focus:ring-2 focus:ring-purple-500/50"
+                              className="min-h-[160px] sm:min-h-[200px] resize-none bg-slate-50 dark:bg-[#0F0F0F] border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-sm rounded-xl focus:ring-2 focus:ring-amber-500/50"
                               placeholder="Your enhanced prompt will appear here..."
                             />
                             {enhancedPrompt && (
@@ -1205,7 +1309,7 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
                                       variant="outline"
                                       size="icon"
                                       onClick={handleCopy}
-                                      className="rounded-lg bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm hover:bg-blue-50 dark:hover:bg-blue-900/40 border-gray-200 dark:border-gray-700 shadow-sm"
+                                      className="rounded-lg bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm hover:bg-emerald-50 dark:hover:bg-emerald-900/40 border-slate-200 dark:border-slate-700 shadow-sm"
                                     >
                                       {copied ? (
                                         <motion.div
@@ -1238,7 +1342,7 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
                               <div className="flex items-center">
                                 <Badge
                                   variant="outline"
-                                  className="bg-purple-50/50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800"
+                                  className="bg-amber-50/50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800"
                                 >
                                   <Sparkles className="w-3 h-3 mr-1" />
                                   AI Enhanced
@@ -1247,7 +1351,7 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                                className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
                                 onClick={handleSave}
                                 disabled={!enhancedPrompt}
                               >
@@ -1266,13 +1370,13 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.5 }}
-                      className="mt-2 p-4 bg-gradient-to-r from-blue-50/50 to-purple-50/50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl border border-blue-100/50 dark:border-blue-800/30"
+                      className="mt-2 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800"
                     >
-                      <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center mb-2">
-                        <Lightbulb className="w-4 h-4 mr-1.5 text-amber-500" />
+                      <h3 className="text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center mb-1">
+                        <Lightbulb className="w-3 h-3 mr-1 text-amber-500" />
                         Prompt Enhancement Tips
                       </h3>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">
+                      <p className="text-xs text-slate-600 dark:text-slate-400">
                         Try adjusting the complexity level to generate different
                         variations. Advanced prompts may include more technical
                         details and creative elements.
@@ -1283,57 +1387,10 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
               </div>
             </Card>
           </motion.section>
-
-          {/* Examples Section */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="mt-12 sm:mt-20 text-center px-4"
-          >
-            <h2 className="text-xl sm:text-2xl font-semibold mb-6 sm:mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 inline-flex items-center">
-              <Sparkle className="w-5 h-5 mr-2" />
-              Quick Start Examples
-            </h2>
-            <div className="flex flex-wrap gap-3 sm:gap-4 justify-center max-w-3xl mx-auto">
-              {examples.map((example, index) => (
-                <motion.div
-                  key={index}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                    transition: { delay: 0.1 * index, duration: 0.3 },
-                  }}
-                >
-                  <Button
-                    variant="outline"
-                    onClick={() => setInputPrompt(example.text)}
-                    className="text-sm border border-gray-200/20 dark:border-gray-700/20 bg-white/5 dark:bg-gray-800/5 backdrop-blur-sm hover:bg-blue-500/5 dark:hover:bg-blue-500/5 rounded-xl px-4 py-6 h-auto"
-                  >
-                    <Sparkle className="w-4 h-4 mr-2 text-blue-500" />
-                    {example.label}
-                  </Button>
-                </motion.div>
-              ))}
-            </div>
-          </motion.section>
-
-          {/* Model Information */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-center text-xs text-gray-500 dark:text-gray-400 mt-6"
-          >
-            Powered by Google&apos;s Gemini 2.0 Flash AI model
-          </motion.div>
         </main>
 
         {/* Footer */}
-        <footer className="mt-16 sm:mt-24 py-8 sm:py-10 border-t border-gray-200/20 dark:border-gray-700/30 bg-white/5 dark:bg-gray-900/5 backdrop-blur-sm">
+        <footer className=" py-8 sm:py-10 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0F0F0F]">
           <div className="container mx-auto text-center space-y-6 px-4">
             <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-8">
               {[
@@ -1360,7 +1417,7 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-gray-600 hover:text-blue-500 dark:text-gray-400 dark:hover:text-blue-400 transition-colors bg-white/10 dark:bg-gray-800/10 px-4 py-2 rounded-full"
+                  className="flex items-center gap-2 text-slate-600 hover:text-emerald-500 dark:text-slate-400 dark:hover:text-emerald-400 transition-colors bg-white/10 dark:bg-[#1A1A1A]/10 px-4 py-2 rounded-full"
                 >
                   <link.icon className="w-4 h-4" />
                   <span>{link.label}</span>
@@ -1371,17 +1428,17 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
               <div className="flex items-center gap-2 mb-2">
                 {/* <Sparkles className="w-4 h-4 text-blue-500 dark:text-blue-400" /> */}
                 <Image
-                  src={"/logo.png"}
+                  src={"/icon.png"}
                   width={1000}
                   height={1000}
                   className="w-4 h-4 sm:w-8 sm:h-8 object-contain"
                   alt="PromptPilot Logo"
                 />
-                <span className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+                <span className="font-semibold text-emerald-600 dark:text-emerald-400">
                   PromptPilot
                 </span>
               </div>
-              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
                 © {new Date().getFullYear()} PromptPilot. Powered by AI.
               </p>
 
@@ -1389,13 +1446,34 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
                 href="https://karandev.in"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
+                className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors"
               >
                 Developer and Designed by Karan
               </a>
             </div>
           </div>
         </footer>
+
+        {/* Fixed Buy Me a Coffee Button - Bottom Right Corner */}
+        <motion.a
+          href="https://coff.ee/anshtsxr"
+          target="_blank"
+          rel="noopener noreferrer"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 1, duration: 0.5 }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          className="fixed bottom-6 right-6 z-50 cursor-pointer"
+        >
+          <Image
+            src="/buymecoffee.png"
+            alt="Buy me a coffee"
+            width={200}
+            height={60}
+            className="rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+          />
+        </motion.a>
       </div>
     </TooltipProvider>
   );

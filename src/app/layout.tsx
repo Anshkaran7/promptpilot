@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
+import { Lato } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
 
-const montserrat = Montserrat({
+const lato = Lato({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["100", "300", "400", "700", "900"],
 });
 
 export const metadata: Metadata = {
@@ -186,7 +186,7 @@ export default function RootLayout({
           content="z_CmteBHB8HMM6jq9eNHxtGe4bsb4qRtABbFyEqOZ_I"
         />
       </head>
-      <body className={montserrat.className}>
+      <body className={lato.className}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
