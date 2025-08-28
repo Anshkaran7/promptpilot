@@ -54,6 +54,12 @@ const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY!);
 const GEMINI_MODEL = "gemini-1.5-flash";
 const API_TIMEOUT = 15000; // 15 seconds timeout
 
+// Enhanced Rate Limiting Configuration
+// - Base cooldown: 30 seconds between requests
+// - Exponential backoff: 1min, 2min, 4min, 8min, 16min (max 5min cap)
+// - Resets on successful requests
+// - Manual reset option for users
+
 // Initialize Supabase client once
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -99,6 +105,11 @@ const PromptEnhancer = () => {
   const minRequestInterval = 30000; // 30 seconds between requests (reduced from 60s for gemini-2.0-flash)
   const [cooldownRemaining, setCooldownRemaining] = useState(0);
   const cooldownTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Enhanced rate limiting with exponential backoff
+  const [consecutiveFailures, setConsecutiveFailures] = useState(0);
+  const maxConsecutiveFailures = 3;
+  const baseBackoffTime = 60000; // 1 minute base backoff
 
   useEffect(() => {
     const checkSession = async () => {
@@ -539,6 +550,9 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
       // await storePrompt(inputPrompt, enhanced);
       setLoadingProgress(100);
       setLoadingMessage("Complete!");
+
+      // Reset consecutive failures on success
+      setConsecutiveFailures(0);
     } catch (error: unknown) {
       console.error("Enhancement error:", error);
       if (error instanceof Error) {
@@ -552,8 +566,22 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
           );
         } else if (error.message.includes("quota exceeded")) {
           setIsQuotaExceeded(true);
+          setConsecutiveFailures((prev) => prev + 1);
+
+          // Calculate backoff time with exponential increase
+          const backoffTime = Math.min(
+            baseBackoffTime * Math.pow(2, Math.min(consecutiveFailures, 5)),
+            300000 // Max 5 minutes
+          );
+
+          // Set extended cooldown for quota exceeded
+          const extendedCooldown = Math.max(backoffTime, minRequestInterval);
+          setCooldownRemaining(Math.ceil(extendedCooldown / 1000));
+
           setError(
-            "Google Gemini API quota exceeded. Please wait before trying again, or try a shorter prompt."
+            `Google Gemini API quota exceeded. Please wait ${Math.ceil(
+              backoffTime / 1000
+            )} seconds before trying again, or try a shorter prompt.`
           );
         } else if (error.message.includes("Authentication error")) {
           setError(
@@ -583,6 +611,18 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
       console.error("Copy error:", err);
       setError("Failed to copy text");
     }
+  };
+
+  const resetRateLimit = () => {
+    setConsecutiveFailures(0);
+    setCooldownRemaining(0);
+    if (cooldownTimerRef.current) {
+      clearTimeout(cooldownTimerRef.current);
+      cooldownTimerRef.current = null;
+    }
+    lastRequestTime.current = null;
+    setError(null);
+    setIsQuotaExceeded(false);
   };
 
   const loadPrompt = (input: string, output: string) => {
@@ -1187,7 +1227,20 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
                     ) : cooldownRemaining > 0 ? (
                       <span className="flex items-center gap-2 text-base font-medium">
                         <Clock className="w-5 h-5 mr-1" />
-                        Cooldown: {cooldownRemaining}s
+                        {consecutiveFailures > 0 ? (
+                          <>
+                            <span className="text-orange-500">
+                              Rate Limited:
+                            </span>{" "}
+                            {cooldownRemaining}s
+                            <span className="text-xs text-muted-foreground ml-1">
+                              (Attempt {consecutiveFailures}/
+                              {maxConsecutiveFailures})
+                            </span>
+                          </>
+                        ) : (
+                          <>Cooldown: {cooldownRemaining}s</>
+                        )}
                       </span>
                     ) : (
                       <span className="flex items-center gap-2 text-base font-medium">
@@ -1207,6 +1260,28 @@ IMPORTANT: Maintain the original intent but make it more effective for AI respon
                       <AlertCircle className="inline-block w-3 h-3 mr-1 mb-0.5" />
                       Please login to enhance prompts and access all features
                     </motion.p>
+                  )}
+
+                  {/* Rate Limiting Info */}
+                  {consecutiveFailures > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3 }}
+                      className="text-xs text-center text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/30 p-2 rounded-lg border border-orange-200 dark:border-orange-800"
+                    >
+                      <AlertCircle className="inline-block w-3 h-3 mr-1 mb-0.5" />
+                      API rate limit reached. Wait time increases with each
+                      failure to protect against quota issues.
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={resetRateLimit}
+                        className="ml-2 h-6 px-2 text-xs border-orange-300 dark:border-orange-700 text-orange-700 dark:text-orange-300 hover:bg-orange-100 dark:hover:bg-orange-900/50"
+                      >
+                        Reset
+                      </Button>
+                    </motion.div>
                   )}
                 </div>
 

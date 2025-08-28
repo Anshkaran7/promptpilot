@@ -24,7 +24,6 @@
   - Context-aware translations
   - Regional language understanding
 
-
 - 💡 **Smart Features**
 
   - Real-time prompt analysis
@@ -148,6 +147,39 @@ yarn dev
 ```
 
 Visit [http://localhost:3000](http://localhost:3000) to start using PromptPilot.
+
+## 🔧 Troubleshooting
+
+### Google Gemini API Quota Exceeded
+
+If you encounter the "Google Gemini API quota exceeded" error:
+
+**Immediate Solutions:**
+
+1. **Wait for Cooldown**: The app automatically implements a 30-second cooldown between requests
+2. **Use Shorter Prompts**: Try breaking down complex requests into smaller, simpler prompts
+3. **Reset Rate Limit**: Use the "Reset" button if you see the rate limiting message
+
+**Advanced Rate Limiting:**
+
+- **Exponential Backoff**: Wait time increases with consecutive failures (1min → 2min → 4min → 8min, max 5min)
+- **Automatic Recovery**: Rate limits reset after successful requests
+- **Visual Indicators**: Clear feedback on remaining cooldown time
+
+**Long-term Solutions:**
+
+1. **Check Google Cloud Console**: Verify your current API usage and quotas
+2. **Upgrade Plan**: Consider upgrading your Gemini API plan for higher limits
+3. **Optimize Usage**: Use the app during off-peak hours to avoid rate limits
+
+**Rate Limiting Features:**
+
+- ✅ 30-second base cooldown between requests
+- ✅ Exponential backoff for repeated failures
+- ✅ Visual countdown timer
+- ✅ Manual reset option
+- ✅ Automatic recovery on success
+- ✅ User-friendly error messages
 
 ## 📖 Usage Guide
 
